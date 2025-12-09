@@ -1,0 +1,67 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4ff;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  margin-top: 20px;
+  color: #003366;
+}
+
+#studentInfo {
+  margin-top: 20px;
+}
+
+#studentInfo img {
+  border-radius: 10px;
+  margin: 10px 0;
+  width: 150px;
+}
+
+.career-section {
+  margin-top: 30px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.career-card {
+  border: 1px solid #dcdcdc;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: left;
+  margin: 15px 0;
+  background: #f8faff;
+}
+
+.career-card h4 {
+  color: #0056b3;
+}
+
+.career-card button {
+  margin-top: 10px;
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.career-card button:hover {
+  background: #218838;
+}
+
+#appliedMsg {
+  color: green;
+  font-weight: bold;
+  margin-top: 15px;
+}

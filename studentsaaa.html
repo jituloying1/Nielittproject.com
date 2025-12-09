@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Page</title>
+  <link rel="stylesheet" href="admincss.css">
+</head>
+<body>
+  <h2>Student Profile</h2>
+  <div id="studentInfo"></div>
+
+  <script>
+    const studentData = JSON.parse(localStorage.getItem("studentData"));
+    if (studentData) {
+      document.getElementById("studentInfo").innerHTML = `
+        <img src="${studentData.photo}" alt="Student Photo" width="150">
+        <h3>${studentData.name}</h3>
+        <p>Rank: ${studentData.rank}</p>
+      `;
+    } else {
+      document.getElementById("studentInfo").innerText = "No student data found!";
+    }
+  </script>
+</body>
+</html>

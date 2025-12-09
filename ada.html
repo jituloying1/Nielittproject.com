@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABC Institute - Student Admission System</title>
+<style>
+  body {font-family: Arial; margin:0; padding:20px; background:#f3f6fb; text-align:center;}
+  h1 {color:#222;}
+  .btn {padding:10px 20px; border:none; border-radius:6px; color:#fff; cursor:pointer; margin:5px; font-size:16px;}
+  #newBtn{background:#007bff;} #viewBtn{background:#003399;}
+  form {background:#fff; padding:20px; width:95%; max-width:700px; margin:20px auto; border-radius:8px; box-shadow:0 0 5px rgba(0,0,0,0.2);}
+  input, select, textarea {width:90%; padding:8px; margin:6px 0; border:1px solid #ccc; border-radius:4px;}
+  img {max-width:100px; border-radius:8px; margin-top:8px;}
+  table {width:95%; margin:20px auto; border-collapse:collapse; background:#fff;}
+  th,td {border:1px solid #ddd; padding:8px;}
+  th {background:#007bff; color:#fff;}
+  .hidden {display:none;}
+  section {text-align:left; margin-top:15px;}
+  section h3 {background:#007bff; color:white; padding:8px; border-radius:5px;}
+</style>
+</head>
+<body>
+
+<h1>ABC Institute - Student Admission System</h1>
+
+<div id="menu">
+  <button class="btn" id="newBtn">➕ New Admission</button>
+  <button class="btn" id="viewBtn">👁 View All Students</button>
+</div>
+
+<!-- Admission Form -->
+<div id="admissionSection" class="hidden">
+<form id="admissionForm">
+  <section>
+    <h3>1️⃣ Personal Details</h3>
+    <input type="text" id="firstName" placeholder="First Name" required><br>
+    <input type="text" id="middleName" placeholder="Middle Name"><br>
+    <input type="text" id="lastName" placeholder="Last Name" required><br>
+    <select id="gender" required>
+      <option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option>
+    </select><br>
+    <input type="date" id="dob" required><br>
+    <input type="text" id="bloodGroup" placeholder="Blood Group"><br>
+    <input type="text" id="nationality" placeholder="Nationality" value="Indian"><br>
+    <input type="text" id="religion" placeholder="Religion"><br>
+    <select id="category"><option value="">Category</option><option>General</option><option>OBC</option><option>SC</option><option>ST</option><option>Other</option></select><br>
+    <input type="text" id="aadhar" placeholder="Aadhar Number"><br>
+    <label>Upload Photo:</label><br>
+    <input type="file" id="photo" accept="image/*" onchange="previewPhoto(event)"><br>
+    <img id="photoPreview">
+  </section>
+
+  <section>
+    <h3>2️⃣ Family / Guardian Details</h3>
+    <input type="text" id="fatherName" placeholder="Father's Name" required><br>
+    <input type="text" id="fatherOccupation" placeholder="Father's Occupation"><br>
+    <input type="text" id="motherName" placeholder="Mother's Name" required><br>
+    <input type="text" id="motherOccupation" placeholder="Mother's Occupation"><br>
+    <input type="text" id="guardianName" placeholder="Guardian's Name"><br>
+    <input type="number" id="familyIncome" placeholder="Annual Family Income"><br>
+    <input type="text" id="parentPhone" placeholder="Parent Contact Number" required><br>
+    <input type="email" id="parentEmail" placeholder="Parent Email ID">
+  </section>
+
+  <section>
+    <h3>3️⃣ Address Details</h3>
+    <textarea id="address" placeholder="Full Address" required></textarea><br>
+    <input type="text" id="village" placeholder="Village / Town / City" required><br>
+    <input type="text" id="district" placeholder="District" required><br>
+    <input type="text" id="state" placeholder="State" required><br>
+    <input type="number" id="pin" placeholder="PIN Code" required><br>
+    <input type="text" id="country" placeholder="Country" value="India" required>
+  </section>
+
+  <section>
+    <h3>4️⃣ Academic Details</h3>
+    <input type="text" id="session" placeholder="Session (e.g. 2025-2026)" required><br>
+    <select id="admissionType"><option value="">Admission Type</option><option>New</option><option>Transfer</option><option>Re-admission</option></select><br>
+    <select id="class" required>
+      <option value="">Select Class / Course</option>
+      <option>Nursery</option><option>LKG</option><option>UKG</option>
+      <option>Class 1</option><option>Class 2</option><option>Class 3</option>
+      <option>Class 4</option><option>Class 5</option><option>Class 6</option>
+      <option>Class 7</option><option>Class 8</option><option>Class 9</option>
+      <option>Class 10</option><option>Class 11</option><option>Class 12</option>
+      <option>BA</option><option>BSc</option><option>BCom</option><option>MA</option><option>MSc</option><option>MCom</option>
+    </select><br>
+    <input type="text" id="stream" placeholder="Stream (Arts / Science / Commerce)"><br>
+    <input type="text" id="previousSchool" placeholder="Previous School / College"><br>
+    <input type="text" id="previousClass" placeholder="Previous Class / Year Passed"><br>
+    <input type="text" id="previousMarks" placeholder="Previous Marks / Percentage"><br>
+    <input type="text" id="board" placeholder="Board / University">
+  </section>
+
+  <section>
+    <h3>5️⃣ Upload Documents</h3>
+    <input type="file" id="tc"><label> Transfer Certificate</label><br>
+    <input type="file" id="migration"><label> Migration Certificate</label><br>
+    <input type="file" id="character"><label> Character Certificate</label><br>
+    <input type="file" id="aadharFile"><label> Aadhar Card</label><br>
+    <input type="file" id="birthCert"><label> Birth Certificate</label><br>
+    <input type="file" id="incomeCert"><label> Income Certificate</label><br>
+    <input type="file" id="casteCert"><label> Caste Certificate</label><br>
+    <input type="file" id="signature" accept="image/*" onchange="previewSign(event)"><label> Signature</label><br>
+    <img id="signPreview">
+  </section>
+
+  <section>
+    <h3>6️⃣ Payment Details</h3>
+    <input type="number" id="admissionFee" placeholder="Admission Fee"><br>
+    <select id="paymentMethod"><option value="">Payment Method</option><option>Cash</option><option>UPI</option><option>Card</option><option>Bank Transfer</option></select><br>
+    <input type="text" id="transactionId" placeholder="Transaction / Receipt Number"><br>
+    <input type="date" id="paymentDate">
+  </section>
+
+  <section>
+    <h3>7️⃣ Other Information</h3>
+    <label>Hostel Required:</label>
+    <select id="hostel"><option>No</option><option>Yes</option></select><br>
+    <label>Transportation Required:</label>
+    <select id="transport"><option>No</option><option>Yes</option></select><br>
+    <input type="text" id="busRoute" placeholder="Bus Route / Stop (if any)"><br>
+    <textarea id="medical" placeholder="Medical History / Conditions"></textarea><br>
+    <textarea id="hobbies" placeholder="Hobbies / Interests"></textarea><br>
+    <textarea id="achievements" placeholder="Any Achievements"></textarea><br>
+    <input type="checkbox" id="declaration" required> I confirm that all details provided are true.
+  </section>
+
+  <br>
+  <button type="submit" class="btn" style="background:green;">Save Admission</button>
+  <button type="button" onclick="showMenu()" class="btn" style="background:gray;">Back</button>
+</form>
+</div>
+
+<!-- View Students -->
+<div id="viewStudentsSection" class="hidden">
+  <h3>All Admitted Students</h3>
+  <table id="studentsTable">
+    <thead><tr><th>Photo</th><th>Name</th><th>Class</th><th>Phone</th><th>Session</th><th>Gender</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <button onclick="showMenu()" class="btn" style="background:gray;">Back</button>
+</div>
+
+<script>
+const newBtn=document.getElementById('newBtn');
+const viewBtn=document.getElementById('viewBtn');
+const menu=document.getElementById('menu');
+const form=document.getElementById('admissionForm');
+const admission=document.getElementById('admissionSection');
+const view=document.getElementById('viewStudentsSection');
+const tableBody=document.querySelector('#studentsTable tbody');
+
+let photoData="", signData="";
+
+function previewPhoto(e){const f=e.target.files[0];if(f){const r=new FileReader();r.onload=()=>{photoData=r.result;document.getElementById('photoPreview').src=r.result};r.readAsDataURL(f);}}
+function previewSign(e){const f=e.target.files[0];if(f){const r=new FileReader();r.onload=()=>{signData=r.result;document.getElementById('signPreview').src=r.result};r.readAsDataURL(f);}}
+
+newBtn.onclick=()=>{menu.style.display='none';admission.classList.remove('hidden');};
+viewBtn.onclick=()=>{menu.style.display='none';view.classList.remove('hidden');loadStudents();};
+function showMenu(){admission.classList.add('hidden');view.classList.add('hidden');menu.style.display='block';}
+
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const data={
+    name:document.getElementById('firstName').value+" "+document.getElementById('middleName').value+" "+document.getElementById('lastName').value,
+    gender:document.getElementById('gender').value,
+    dob:document.getElementById('dob').value,
+    className:document.getElementById('class').value,
+    session:document.getElementById('session').value,
+    phone:document.getElementById('parentPhone').value,
+    address:document.getElementById('address').value,
+    photo:photoData
+  };
+  let all=JSON.parse(localStorage.getItem('students'))||[];
+  all.push(data);
+  localStorage.setItem('students',JSON.stringify(all));
+  alert("Admission Saved Successfully!");
+  form.reset();
+  document.getElementById('photoPreview').src="";
+  document.getElementById('signPreview').src="";
+  photoData="";signData="";
+});
+
+function loadStudents(){
+  let all=JSON.parse(localStorage.getItem('students'))||[];
+  tableBody.innerHTML="";
+  all.forEach(s=>{
+    const row=`<tr>
+      <td><img src="${s.photo}" style="width:40px;height:40px;border-radius:4px;"></td>
+      <td>${s.name}</td><td>${s.className}</td><td>${s.phone}</td>
+      <td>${s.session}</td><td>${s.gender}</td></tr>`;
+    tableBody.insertAdjacentHTML('beforeend',row);
+  });
+}
+</script>
+
+</body>
+</html>

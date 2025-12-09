@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | ABC Institute</title>
+  <link rel="stylesheet" href="dashboardstyle.css">
+  <script src="dashboard.js" defer></script>
+</head>
+<body>
+  <header>
+    <marquee direction="left" scrollamount="6" class="marquee-title">
+      <h1>loying Institute - Performance Dashboard</h1>
+    </marquee>
+  </header>
+
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="addmission.html">Admission</a>
+    <a href="student.html">Students</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="fees.html">Fees</a>
+    <a href="result.html">Results</a>
+  </nav>
+
+  <main class="dashboard-container">
+    <section class="analytics">
+      <div class="card stat-card">
+        <h3>Student Performance</h3>
+        <div class="circle" id="studentPercent">87%</div>
+      </div>
+      <div class="card stat-card">
+        <h3>Staff Efficiency</h3>
+        <div class="circle" id="staffPercent">92%</div>
+      </div>
+      <div class="card stat-card">
+        <h3>Institute Ranking</h3>
+        <div id="rankStars">⭐⭐⭐⭐☆</div>
+        <p>Overall Rating: <span id="avgRating">4.2</span>/5</p>
+      </div>
+    </section>
+
+    <section class="feedback-section">
+      <h2>Public Feedback</h2>
+      <form id="feedbackForm">
+        <input type="text" id="userName" placeholder="Your Name" required>
+        <textarea id="userComment" placeholder="Write your feedback..." required></textarea>
+        <div class="stars">
+          <label>Rate us:</label>
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+        </div>
+        <button type="submit">Submit Feedback</button>
+      </form>
+
+      <div class="feedback-list" id="feedbackList">
+        <h3>Recent Comments</h3>
+        <!-- Live feedback will appear here -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 ABC Institute | Developed by Jitu Loying</p>
+  </footer>
+</body>
+</html>

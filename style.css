@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f4f9;
+  color: #222;
+}
+
+header {
+  background-color: #0047ab;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.logo {
+  width: 60px;
+  vertical-align: middle;
+}
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  background-color: #003580;
+  flex-wrap: wrap;
+}
+
+.navbar a {
+  color: white;
+  padding: 14px 20px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  background-color: #0056d6;
+}
+
+main {
+  padding: 30px;
+  text-align: center;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+footer {
+  background-color: #003580;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin-top: 50px;
+}
+.marquee-title {
+  background-color: #0047ab;
+  color: white;
+  font-weight: bold;
+  font-size: 22px;
+  padding: 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}

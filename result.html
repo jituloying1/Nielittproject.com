@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ABC Institute — Student Result</title>
+  <style>
+    :root{--primary:#0b63d6;--dark:#002b5c}
+    *{box-sizing:border-box}
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f4f7fc;color:#222}
+    header{background:linear-gradient(90deg,var(--dark),#0b63d6);color:#fff;padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+    header h1{margin:0;font-size:20px}
+    .header-right{display:flex;gap:12px;align-items:center}
+    .btn{background:#fff;color:var(--dark);border:none;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:600}
+    .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff}
+    .container{max-width:1000px;margin:28px auto;padding:18px}
+    .hero{display:flex;gap:20px;align-items:center}
+    .hero-left{flex:1;background:#fff;padding:24px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.06);text-align:center}
+    .hero-left h2{margin:0 0 10px;font-size:28px;color:var(--dark)}
+    .search-input{width:80%;padding:14px;border:1px solid #ddd;border-radius:8px;font-size:16px}
+    .hero-left .search-row{margin-top:12px;display:flex;gap:10px;justify-content:center}
+    .hero-right{width:360px;background:linear-gradient(180deg,#fff,#f7fbff);padding:20px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.04);text-align:left}
+    .hero-right h3{margin:0 0 8px;color:var(--dark)}
+    .note{font-size:13px;color:#555;margin-top:8px}
+    #resultBox{display:none;margin-top:18px;background:#fff;padding:14px;border-radius:8px;border:1px solid #eee}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border:1px solid #eee;text-align:left}
+    th{background:var(--primary);color:#fff}
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999}
+    .modal{background:#fff;padding:18px;border-radius:10px;max-width:720px;width:95%;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+    .form-row{display:flex;gap:8px;margin-bottom:8px}
+    .form-row > *{flex:1}
+    .subjects{margin-top:8px;border:1px dashed #e0e0e0;padding:10px;border-radius:8px}
+    .subject-row{display:flex;gap:8px;margin-bottom:8px}
+    .small{width:120px}
+    .right{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+    .hidden{display:none}
+    .secondary{background:#6c757d;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ABC Institute — Student Result Portal</h1>
+  <div class="header-right">
+    <div style="color:#fff;font-size:14px;opacity:0.95">Students: Result check in dwon </div>
+    <button id="adminTopBtn" class="btn" onclick="openLogin()">Admin Login</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <!-- LEFT: Big student result check area -->
+    <div class="hero-left">
+      <h2>Check Your Result</h2>
+      <p class="note">Student ID Either Name input to "Get Result" pe click on there</p>
+      <div class="search-row">
+        <input id="searchInput" class="search-input" type="text" placeholder="Enter Student ID or Name">
+        <button class="btn" onclick="getResult()">Get Result</button>
+      </div>
+
+      <div id="resultBox">
+        <h3>Student Result</h3>
+        <table id="resultTable"><tr><th>Field</th><th>Details</th></tr></table>
+        <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
+          <button class="btn" onclick="downloadResult()">Download Result (PDF)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Small info / admin hint 
+    <div class="hero-right">
+      <h3>Student Result Check</h3>
+      <p class="note">Yahan se aap apna result check kar sakte hain. Agar admin ho to top-right se login karein.</p>
+      <div style="margin-top:12px">
+        <strong>Admin Credentials:</strong>
+        <div style="margin-top:6px;font-size:13px;color:#333">
+          ID: <code>admin78962209</code><br>
+          Password: <code>admin78962209</code>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn" onclick="openLogin()">Admin Login</button>
+      </div>
+    </div>
+  </div>-->
+
+  <!-- Below: list of all students (if any) -->
+  <div id="studentsListArea" style="margin-top:22px"></div>
+</div>
+
+<!-- Admin Login Modal -->
+<div id="loginModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h3>Admin Login</h3>
+    <div class="form-row">
+      <input type="text" id="adminId" placeholder="Admin ID">
+      <input type="password" id="adminPass" placeholder="Password">
+    </div>
+    <div class="right">
+      <button class="btn" onclick="doAdminLogin()">Login</button>
+      <button class="secondary" onclick="closeLogin()">Cancel</button>
+    </div>
+    <p class="note">ID & PASWORD : <strong>PUT CORECTLY PLEASE</strong></p>
+  </div>
+</div>
+
+<!-- Add Student Modal (only visible after admin login) -->
+<div id="addModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h3>Add / Edit Student</h3>
+
+    <div class="form-row">
+      <input type="text" id="stuName" placeholder="Student Name">
+      <input type="text" id="stuClass" placeholder="Class (e.g. 10)">
+    </div>
+    <div class="form-row">
+      <input type="text" id="stuRoll" placeholder="Roll No. / Student ID">
+      <input type="text" id="stuCourse" placeholder="Course (e.g. Science)">
+    </div>
+
+    <div>
+      <label><strong>Subjects & Marks</strong></label>
+      <div class="subjects" id="subjectsArea"></div>
+
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn" onclick="addSubjectRow()">+ Add Subject</button>
+        <button class="secondary" onclick="removeSubjectRow()">- Remove Last</button>
+      </div>
+
+      <div style="margin-top:10px">
+        <strong>Total:</strong> <span id="totalMarks">0</span>
+      </div>
+
+      <div class="right">
+        <button class="btn" onclick="saveStudent()">Save Student</button>
+        <button class="secondary" onclick="closeAddModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+<script>
+  // ---------- Config ----------
+  const ADMIN_ID = 'admin78962209';
+  const ADMIN_PASS = 'admin78962209';
+  let students = [];
+  let editingIndex = -1;
+
+  // ---------- Storage ----------
+  function loadStudents() {
+    const raw = localStorage.getItem('students_data_v1');
+    if (raw) {
+      try { students = JSON.parse(raw); } catch(e){ students = []; }
+    }
+    renderStudentsTable();
+  }
+  function saveToStorage(){
+    localStorage.setItem('students_data_v1', JSON.stringify(students));
+  }
+
+  // ---------- Admin Modal ----------
+  function openLogin(){ document.getElementById('loginModal').classList.remove('hidden'); }
+  function closeLogin(){ document.getElementById('loginModal').classList.add('hidden'); }
+  function doAdminLogin(){
+    const id = document.getElementById('adminId').value.trim();
+    const pw = document.getElementById('adminPass').value.trim();
+    if(id === ADMIN_ID && pw === ADMIN_PASS){
+      closeLogin();
+      onAdminLoggedIn();
+    } else {
+      alert('Invalid admin credentials!');
+    }
+  }
+  function onAdminLoggedIn(){
+    alert('Admin logged in');
+    // open add modal directly for convenience
+    openAddModal();
+  }
+
+  // ---------- Add Modal & subjects ----------
+  function openAddModal(index=-1){
+    editingIndex = index;
+    document.getElementById('addModal').classList.remove('hidden');
+    document.getElementById('stuName').value = index>=0 ? students[index].name : '';
+    document.getElementById('stuClass').value = index>=0 ? students[index].class : '';
+    document.getElementById('stuRoll').value = index>=0 ? students[index].roll : '';
+    document.getElementById('stuCourse').value = index>=0 ? students[index].course : '';
+    const subjArea = document.getElementById('subjectsArea');
+    subjArea.innerHTML = '';
+    if(index>=0){
+      const arr = students[index].marksArr || [];
+      if(arr.length===0) { createSubjectRow('Subject 1','0'); }
+      else arr.forEach(s => createSubjectRow(s.subject, s.mark));
+    } else {
+      createSubjectRow('Subject 1','0');
+      createSubjectRow('Subject 2','0');
+      createSubjectRow('Subject 3','0');
+    }
+    calculateTotal();
+  }
+  function closeAddModal(){ document.getElementById('addModal').classList.add('hidden'); editingIndex=-1; }
+  function addSubjectRow(){ createSubjectRow('','0'); calculateTotal(); }
+  function removeSubjectRow(){
+    const subjArea = document.getElementById('subjectsArea');
+    if(subjArea.children.length>0) { subjArea.removeChild(subjArea.lastElementChild); calculateTotal(); }
+  }
+  function createSubjectRow(sub='', mark='0'){
+    const div = document.createElement('div');
+    div.className = 'subject-row';
+    div.innerHTML = `
+      <input type="text" class="sub-name" placeholder="Subject name" value="${escapeHtml(sub)}">
+      <input type="number" class="sub-mark small" placeholder="Marks" value="${escapeHtml(mark)}" min="0" oninput="calculateTotal()">
+      <button class="secondary" type="button" onclick="this.parentElement.remove(); calculateTotal()">Remove</button>
+    `;
+    document.getElementById('subjectsArea').appendChild(div);
+  }
+
+  function escapeHtml(s){ return (s+'').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
+
+  function calculateTotal(){
+    const marks = Array.from(document.querySelectorAll('.sub-mark')).map(i => {
+      const v = parseFloat(i.value);
+      return Number.isFinite(v)?v:0;
+    });
+    const total = marks.reduce((a,b)=>a+b,0);
+    document.getElementById('totalMarks').textContent = total;
+  }
+
+  function saveStudent(){
+    const name = document.getElementById('stuName').value.trim();
+    const cls = document.getElementById('stuClass').value.trim();
+    const roll = document.getElementById('stuRoll').value.trim();
+    const course = document.getElementById('stuCourse').value.trim();
+    if(!name || !roll){ alert('Name aur Roll/ID zaroori hai'); return; }
+    const subjectRows = Array.from(document.querySelectorAll('#subjectsArea .subject-row'));
+    const marksArr = subjectRows.map(r => {
+      const sub = r.querySelector('.sub-name').value.trim() || 'Unnamed';
+      const mk = parseFloat(r.querySelector('.sub-mark').value) || 0;
+      return {subject: sub, mark: mk};
+    });
+    const total = marksArr.reduce((a,b)=>a + (b.mark||0), 0);
+    const studentObj = { id: roll, name, class: cls, roll, course, marksArr, total };
+    if(editingIndex>=0){ students[editingIndex] = studentObj; editingIndex=-1; }
+    else {
+      const idx = students.findIndex(s=>s.roll===roll);
+      if(idx>=0 && !confirm('Same Roll/ID pe record hai. Replace karein?')) return;
+      if(idx>=0) students[idx]=studentObj; else students.push(studentObj);
+    }
+    saveToStorage();
+    renderStudentsTable();
+    closeAddModal();
+    alert('Student saved.');
+  }
+
+  // ---------- Render ----------
+  function renderStudentsTable(){
+    const area = document.getElementById('studentsListArea');
+    if(students.length===0){
+      area.innerHTML = '<div style="color:#555">Koi student record nahi mila. (Admin login karke add karein)</div>';
+      document.getElementById('resultBox').style.display = 'none';
+      return;
+    }
+
+
+   let html = '<table><tr><th>#</th><th>Roll/ID</th><th>Name</th><th>Class</th><th>Course</th><th>Total</th><th>Actions</th></tr>';
+    students.forEach((s,i)=>{
+      html += `<tr>
+        <td>${i+1}</td>
+        <td>${escapeHtml(s.roll)}</td>
+        <td>${escapeHtml(s.name)}</td>
+        <td>${escapeHtml(s.class)}</td>
+        <td>${escapeHtml(s.course)}</td>
+        <td>${s.total}</td>
+        <td>
+    
+        </td>
+      </tr>`;
+      //    yar uporot tr aru td r uporot past kora hobo > 
+    });
+    html += '</table>';
+    area.innerHTML = html;
+  }
+
+  function viewStudent(i){
+    const s = students[i];
+    if(!s) return;
+    showStudentResult(s);
+  }
+  function deleteStudent(i){
+    if(!confirm('Record delete karein?')) return;
+    students.splice(i,1);
+    saveToStorage();
+    renderStudentsTable();
+  }
+
+  // ---------- Search & Show ----------
+  function getResult(){
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    if(!q){ alert('Student ID ya Name daalein'); return; }
+    const found = students.find(s => (s.roll && s.roll.toLowerCase()===q) || (s.id && s.id.toLowerCase()===q) || (s.name && s.name.toLowerCase().includes(q)));
+    if(!found){ alert('Here is not anu recoord with enterd detais'); return; }
+    showStudentResult(found);
+  }
+
+  function showStudentResult(student){
+    const box = document.getElementById('resultBox');
+    const table = document.getElementById('resultTable');
+    table.innerHTML = `<tr><th>Field</th><th>Details</th></tr>
+      <tr><td>Student ID / Roll</td><td>${escapeHtml(student.roll)}</td></tr>
+      <tr><td>Name</td><td>${escapeHtml(student.name)}</td></tr>
+      <tr><td>Class</td><td>${escapeHtml(student.class)}</td></tr>
+      <tr><td>Course</td><td>${escapeHtml(student.course)}</td></tr>
+      <tr><td colspan="2"><strong>Subject Marks</strong></td></tr>`;
+    student.marksArr.forEach(m => {
+      table.innerHTML += `<tr><td>${escapeHtml(m.subject)}</td><td>${m.mark}</td></tr>`;
+    });
+    table.innerHTML += `<tr><td><strong>Total</strong></td><td><strong>${student.total}</strong></td></tr>`;
+    box.style.display = 'block';
+    window._currentDisplayedStudent = student;
+  }
+
+  // ---------- PDF ----------
+  function downloadResult(){
+    const student = window._currentDisplayedStudent;
+    if(!student){ alert('Pehle student ka result dekhein'); return; }
+    const el = document.createElement('div');
+    el.style.padding='18px'; el.style.fontFamily='Arial, sans-serif';
+    el.innerHTML = `
+      <h2>Result — ${escapeHtml(student.name)}</h2>
+      <div><strong>Roll/ID:</strong> ${escapeHtml(student.roll)}</div>
+      <div><strong>Class:</strong> ${escapeHtml(student.class)}</div>
+      <div><strong>Course:</strong> ${escapeHtml(student.course)}</div>
+      <hr />
+      <table style="width:100%;border-collapse:collapse">
+        <tr style="background:#eee"><th style="padding:6px;border:1px solid #ccc;text-align:left">Subject</th><th style="padding:6px;border:1px solid #ccc;text-align:left">Marks</th></tr>
+        ${student.marksArr.map(m => `<tr><td style="padding:6px;border:1px solid #ccc">${escapeHtml(m.subject)}</td><td style="padding:6px;border:1px solid #ccc">${m.mark}</td></tr>`).join('')}
+        <tr><td style="padding:6px;border:1px solid #ccc"><strong>Total</strong></td><td style="padding:6px;border:1px solid #ccc"><strong>${student.total}</strong></td></tr>
+      </table>
+      <div style="margin-top:12px;font-size:12px;color:#666">Generated by ABC Institute</div>
+    `;
+    const opt = { margin:0.4, filename:`result_${student.roll || 'student'}.pdf`, html2canvas:{scale:2}, jsPDF:{orientation:'portrait'} };
+    html2pdf().set(opt).from(el).save();
+  }
+
+  // ---------- Init ----------
+  loadStudents();
+
+  // expose some functions
+  window.openLogin = openLogin;
+  window.openAddModal = openAddModal;
+  window.closeLogin = closeLogin;
+  window.closeAddModal = closeAddModal;
+  window.addSubjectRow = addSubjectRow;
+  window.removeSubjectRow = removeSubjectRow;
+  window.calculateTotal = calculateTotal;
+  window.getResult = getResult;
+  window.downloadResult = downloadResult;
+  window.viewStudent = viewStudent;
+  window.deleteStudent = deleteStudent;
+</script>
+
+</body>
+</html>
+<!------
+  <button onclick="viewStudent(${i})">View</button>
+          <button onclick="openAddModal(${i})">Edit</button>
+          <button class="secondary" onclick="deleteStudent(${i})">Delete</button>-->   
+          <!----
+          uporor yak paste korile moi edit ru view option open koribo parim rejult view list oty -->

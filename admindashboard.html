@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="admincss.css">
+</head>
+<body>
+  <h2>Welcome Admin</h2>
+
+  <div class="dashboard-buttons">
+    <button onclick="showSection('studentForm')">Add Student</button>
+    <button onclick="showSection('staffForm')">Add Staff</button>
+    <button onclick="showSection('memberForm')">Add Member</button>
+
+  </div>
+
+
+<h1>  CLICK ON THIS LINK TO GET ALL DETAILS ABOUTE OF THE STUDENTS ONLY ALLOWED FOR ADMI  </h1>
+
+<a href="view.html" class="link">➡ Go to View Students and store Details </a>
+
+
+
+  <!-- Student Form -->
+  <section id="studentForm" class="form-section" style="display:none;">
+    <h3>Add Student Details</h3>
+    <form id="addStudentForm">
+      <input type="text" id="studentName" placeholder="Full Name" required>
+      <input type="number" id="studentRank" placeholder="Rank" required>
+      <input type="file" id="studentPhoto" accept="image/*" required>
+      <button type="submit">Add Student</button>
+    </form>
+  </section>
+
+  <!-- Staff Form -->
+  <section id="staffForm" class="form-section" style="display:none;">
+    <h3>Add Staff</h3>
+    <input type="text" placeholder="Staff Name">
+    <input type="text" placeholder="Position">
+  </section>
+
+  <!-- Member Form -->
+  <section id="memberForm" class="form-section" style="display:none;">
+    <h3>Add Community Member</h3>
+    <input type="text" placeholder="Member Name">
+    <input type="text" placeholder="Role">
+  </section>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.form-section').forEach(sec => sec.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    document.getElementById("addStudentForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const name = document.getElementById("studentName").value;
+      const rank = document.getElementById("studentRank").value;
+      const photoFile = document.getElementById("studentPhoto").files[0];
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        localStorage.setItem("studentData", JSON.stringify({
+          name: name,
+          rank: rank,
+          photo: event.target.result
+        }));
+        window.location.href = "student-page.html";
+      }
+      reader.readAsDataURL(photoFile);
+    });
+  </script>
+</body>
+</html>

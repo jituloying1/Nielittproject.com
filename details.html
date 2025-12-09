@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance Management App</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  .controls {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  input, button {
+    padding: 8px;
+    margin: 5px;
+    font-size: 16px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 8px;
+  }
+  th {
+    background-color: #4CAF50;
+    color: white;
+    position: sticky;
+    top: 0;
+  }
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  .table-container {
+    max-height: 500px;
+    overflow-y: scroll;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Attendance Management App</h1>
+
+<div class="controls">
+  <input type="text" id="studentName" placeholder="Enter Student Name">
+  <button onclick="addStudent()">Add Student</button>
+  <button onclick="generateRandomAttendance()">Generate Random Attendance</button>
+  <button onclick="downloadCSV()">Download CSV</button>
+</div>
+
+<div class="table-container">
+<table id="attendanceTable">
+  <thead>
+    <tr>
+      <th>Student ID</th>
+      <th>Name</th>
+      <th>Present Days</th>
+      <th>Absent Days</th>
+      <th>Government Holiday</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Attendance rows go here -->
+  </tbody>
+</table>
+</div>
+
+<script>
+let students = [];
+let studentCount = 0;
+const daysInMonth = 30;
+
+// Add student manually
+function addStudent() {
+    const nameInput = document.getElementById("studentName");
+    const name = nameInput.value.trim();
+    if (!name) return alert("Please enter a student name");
+    studentCount++;
+    const student = {
+        id: S${String(studentCount).padStart(3,'0')},
+        name: name,
+        present: 0,
+        absent: 0,
+        holiday: daysInMonth
+    };
+    students.push(student);
+    nameInput.value = "";
+    renderTable();
+}
+
+// Generate random attendance for all students
+function generateRandomAttendance() {
+    if (students.length === 0) {
+        alert("No students available. Add some students first!");
+        return;
+    }
+    students.forEach(s => {
+        s.present = Math.floor(Math.random() * (daysInMonth - 10)) + 10;
+        s.absent = Math.floor(Math.random() * (daysInMonth - s.present));
+        s.holiday = daysInMonth - s.present - s.absent;
+    });
+    renderTable();
+}
+
+// Render table
+function renderTable() {
+    const tbody = document.querySelector("#attendanceTable tbody");
+    tbody.innerHTML = "";
+    students.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${s.id}</td>
+            <td>${s.name}</td>
+            <td><input type="number" value="${s.present}" min="0" max="${daysInMonth}" onchange="updateAttendance('${s.id}', 'present', this.value)"></td>
+            <td><input type="number" value="${s.absent}" min="0" max="${daysInMonth}" onchange="updateAttendance('${s.id}', 'absent', this.value)"></td>
+            <td>${s.holiday}</td>
+            <td><button onclick="deleteStudent('${s.id}')">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Update attendance values
+function updateAttendance(id, field, value) {
+    const student = students.find(s => s.id === id);
+    value = Math.min(Math.max(parseInt(value) || 0, 0), daysInMonth);
+    student[field] = value;
+    student.holiday = daysInMonth - student.present - student.absent;
+    renderTable();
+}
+
+// Delete student
+function deleteStudent(id) {
+    students = students.filter(s => s.id !== id);
+    renderTable();
+}
+
+// Download CSV
+function downloadCSV() {
+    if (students.length === 0) return alert("No data to download!");
+    const header = ["Student ID","Name","Present Days","Absent Days","Government Holiday"];
+    const rows = students.map(s => [s.id,s.name,s.present,s.absent,s.holiday]);
+    let csvContent = "data:text/csv;charset=utf-8," + [header,...rows].map(e => e.join(",")).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "Attendance.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+
+</body>
+</html>

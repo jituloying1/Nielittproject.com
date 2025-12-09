@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABC Institute | Student Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f1f4ff;
+      display: flex;
+      height: 100vh;
+    }
+
+    .form-section, .table-section {
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .form-section {
+      width: 35%;
+      background: #fff;
+      border-right: 2px solid #d3d3d3;
+    }
+
+    .table-section {
+      width: 65%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0033cc;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background: #0033cc;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #001a66;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #0033cc;
+      color: white;
+    }
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .actions button {
+      margin: 0 3px;
+      padding: 5px 8px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Input Form -->
+  <div class="form-section">
+    <h2>Add Student</h2>
+    <form id="studentForm">
+      <label>Photo:</label>
+      <input type="file" id="photo" accept="image/*" capture="camera">
+      <label>Student Name:</label>
+      <input type="text" id="name" required>
+      <label>Father Name:</label>
+      <input type="text" id="father">
+      <label>Mother Name:</label>
+      <input type="text" id="mother">
+      <label>Village:</label>
+      <input type="text" id="village">
+      <label>State:</label>
+      <input type="text" id="state">
+      <label>Class:</label>
+      <input type="text" id="className">
+      <label>ID Number:</label>
+      <input type="text" id="idNumber" required>
+      <label>Date of Birth:</label>
+      <input type="date" id="dob">
+      <label>Subject Marks (comma separated):</label>
+      <input type="text" id="marks" placeholder="80,90,75,85">
+      <button type="submit">Save Student</button>
+    </form>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-section">
+    <h2>All Students Details</h2>
+    <table id="studentsTable">
+      <thead>
+        <tr>
+          <th>Photo</th>
+          <th>Name</th>
+          <th>ID</th>
+          <th>Class</th>
+          <th>Father</th>
+          <th>Mother</th>
+          <th>Total</th>
+          <th>%</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById('studentForm');
+    const tableBody = document.querySelector('#studentsTable tbody');
+    let students = JSON.parse(localStorage.getItem('students')) || [];
+
+    // Display all students on load
+    function renderStudents() {
+      tableBody.innerHTML = '';
+      students.forEach((stu, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><img src="${stu.photo}" alt=""></td>
+          <td>${stu.name}</td>
+          <td>${stu.id}</td>
+          <td>${stu.className}</td>
+          <td>${stu.father}</td>
+          <td>${stu.mother}</td>
+          <td>${stu.total}</td>
+          <td>${stu.percent}%</td>
+          <td class="actions"><button onclick="editStudent(${index})">Edit</button></td>
+          <td class="actions"><button onclick="deleteStudent(${index})">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Add or Edit Student
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const reader = new FileReader();
+      const file = document.getElementById('photo').files[0];
+      reader.onload = function () {
+        const marks = document.getElementById('marks').value.split(',').map(Number);
+        const total = marks.reduce((a, b) => a + b, 0);
+        const percent = (total / (marks.length * 100) * 100).toFixed(2);
+
+        const newStudent = {
+          photo: file ? reader.result : '',
+          name: document.getElementById('name').value,
+          father: document.getElementById('father').value,
+          mother: document.getElementById('mother').value,
+          village: document.getElementById('village').value,
+          state: document.getElementById('state').value,
+          className: document.getElementById('className').value,
+          id: document.getElementById('idNumber').value,
+          dob: document.getElementById('dob').value,
+          marks: marks,
+          total: total,
+          percent: percent
+        };
+
+        students.push(newStudent);
+        localStorage.setItem('students', JSON.stringify(students));
+        form.reset();
+        renderStudents();
+      };
+      if (file) reader.readAsDataURL(file);
+      else reader.onload(); // No image case
+    });
+
+    // Edit Student
+    function editStudent(index) {
+      const s = students[index];
+      document.getElementById('name').value = s.name;
+      document.getElementById('father').value = s.father;
+      document.getElementById('mother').value = s.mother;
+      document.getElementById('village').value = s.village;
+      document.getElementById('state').value = s.state;
+      document.getElementById('className').value = s.className;
+      document.getElementById('idNumber').value = s.id;
+      document.getElementById('dob').value = s.dob;
+      document.getElementById('marks').value = s.marks.join(',');
+      students.splice(index, 1);
+      localStorage.setItem('students', JSON.stringify(students));
+      renderStudents();
+    }
+
+    // Delete Student
+    function deleteStudent(index) {
+      if (confirm('Are you sure to delete this student?')) {
+        students.splice(index, 1);
+        localStorage.setItem('students', JSON.stringify(students));
+        renderStudents();
+      }
+    }
+
+    renderStudents();
+  </script>
+
+</body>
+</html>

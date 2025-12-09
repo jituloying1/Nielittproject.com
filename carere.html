@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Page | ABC Institute</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .career-section {
+      margin-top: 30px;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .career-card {
+      border: 1px solid #dcdcdc;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: left;
+      margin: 15px 0;
+      background: #f8faff;
+    }
+    .career-card h4 {
+      color: #0056b3;
+    }
+    .career-card button {
+      margin-top: 10px;
+      background: #28a745;
+    }
+    .career-card button:hover {
+      background: #218838;
+    }
+    #appliedMsg {
+      color: green;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Student Profile</h2>
+  <div id="studentInfo"></div>
+
+  <div class="career-section">
+    <h3>🎓 Career & Placement Opportunities</h3>
+    <p>Explore the latest placement offers available for students of ABC Institute.</p>
+
+    <div class="career-card">
+      <h4>Software Developer Intern – TCS</h4>
+      <p><strong>Eligibility:</strong> All BCA / MCA / B.Tech students</p>
+      <p><strong>Location:</strong> Mumbai / Remote</p>
+      <button onclick="applyPlacement('Software Developer Intern – TCS')">Apply Now</button>
+    </div>
+
+    <div class="career-card">
+      <h4>Web Designer – Infosys</h4>
+      <p><strong>Eligibility:</strong> Students with HTML, CSS, JS skills</p>
+      <p><strong>Location:</strong> Bangalore</p>
+      <button onclick="applyPlacement('Web Designer – Infosys')">Apply Now</button>
+    </div>
+
+    <div class="career-card">
+      <h4>Data Analyst – Wipro</h4>
+      <p><strong>Eligibility:</strong> B.Sc / BCA / B.Tech students with Python/Excel</p>
+      <p><strong>Location:</strong> Pune</p>
+      <button onclick="applyPlacement('Data Analyst – Wipro')">Apply Now</button>
+    </div>
+
+    <p id="appliedMsg"></p>
+  </div>
+
+  <script>
+    // Load student info
+    const studentData = JSON.parse(localStorage.getItem("studentData"));
+    if (studentData) {
+      document.getElementById("studentInfo").innerHTML = `
+        <img src="${studentData.photo}" alt="Student Photo" width="150">
+        <h3>${studentData.name}</h3>
+        <p>Rank: ${studentData.rank}</p>
+      `;
+    } else {
+      document.getElementById("studentInfo").innerText = "No student data found!";
+    }
+
+    // Handle placement application
+    function applyPlacement(position) {
+      if (!studentData) {
+        alert("No student logged in!");
+        return;
+      }
+      const applied = {
+        name: studentData.name,
+        rank: studentData.rank,
+        position: position,
+        date: new Date().toLocaleString()
+      };
+      let applications = JSON.parse(localStorage.getItem("placementApplications")) || [];
+      applications.push(applied);
+      localStorage.setItem("placementApplications", JSON.stringify(applications));
+
+      document.getElementById("appliedMsg").innerText = 
+        ✅ You have successfully applied for "${position}";
+    }
+  </script>
+</body>
+</html>

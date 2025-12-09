@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>View Students | ABC Institute</title>
+  <link rel="stylesheet" href="attendance.css">
+</head>
+<body>
+  <h2>📚 All Students Details</h2>
+
+  <input id="searchBox" type="text" placeholder="🔍 Search by name, ID, class, father or mother name..." />
+
+  <table id="studentsTable">
+    <thead>
+      <tr>
+        <th>Photo</th>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Class</th>
+        <th>Father</th>
+        <th>Mother</th>
+        <th>Total</th>
+        <th>%</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <a href="add_student.html" class="link">⬅ Add New Student</a>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  function createRow(student, index) {
+    const tr = document.createElement('tr');
+
+    const tdPhoto = document.createElement('td');
+    if (student.photo) {
+      const img = document.createElement('img');
+      img.src = student.photo;
+      img.width = 50;
+      img.height = 50;
+      img.style.borderRadius = '50%';
+      tdPhoto.appendChild(img);
+    } else tdPhoto.textContent = 'No Photo';
+    tr.appendChild(tdPhoto);
+
+    const addCell = (value) => {
+      const td = document.createElement('td');
+      td.textContent = value || '';
+      tr.appendChild(td);
+    };
+
+    addCell(student.name);
+    addCell(student.idNumber);
+    addCell(student.className);
+    addCell(student.fatherName);
+    addCell(student.motherName);
+    addCell(student.totalMarks);
+    addCell(student.percentage + '%');
+
+    const tdEdit = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.textContent = '✏ Edit';
+    btn.onclick = () => editStudent(index);
+    tdEdit.appendChild(btn);
+    tr.appendChild(tdEdit);
+
+    return tr;
+  }
+
+  function loadStudents() {
+    const students = JSON.parse(localStorage.getItem('students')) || [];
+    const tbody = document.querySelector('#studentsTable tbody');
+    tbody.innerHTML = '';
+
+    students.forEach((s, i) => {
+      tbody.appendChild(createRow(s, i));
+    });
+  }
+
+  function editStudent(index) {
+    const students = JSON.parse(localStorage.getItem('students'));
+    const student = students[index];
+    localStorage.setItem('editStudent', JSON.stringify({index, student}));
+    window.location.href = 'add_student.html';
+  }
+
+  document.getElementById('searchBox').addEventListener('input', function() {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#studentsTable tbody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      if (text.includes(filter)) {
+        row.style.display = '';
+        row.style.background = '#ffff99';
+      } else {
+        row.style.display = 'none';
+        row.style.background = '';
+      }
+    });
+  });
+
+  window.editStudent = editStudent;
+  loadStudents();
+});
+</script>
+</body>
+</html>

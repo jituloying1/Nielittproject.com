@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABC Institute | Our Students</title>
+  <link rel="stylesheet" href="students.css">
+  <script src="student.js" defer></script>
+</head>
+<body>
+  <header>
+    <img src="assets/images/logo.png" alt="ABC Institute Logo" class="logo">
+    <marquee direction="left" scrollamount="6" class="marquee-title">
+      <h1>ABC Institute - Student Achievements & Profiles</h1>
+    </marquee>
+  </header>
+
+  <nav class="navbar">
+    <a href="index.html">Dashboard</a>
+    <a href="addmission.html">Admission</a>
+    <a href="index.html" class="active">Students</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="fees.html">Fees</a>
+    <a href="result.html">Results</a>
+    <a href="admin.html">Admin Login</a>
+  </nav>
+
+  <main class="students-page">
+    <h2>Our Students</h2>
+    <p>Explore the achievements, rankings, and career paths of our brilliant students.</p>
+
+    <div class="filter-box">
+      <input type="text" id="searchInput" placeholder="Search by name, class, or rank..." onkeyup="filterStudents()">
+    </div>
+
+    <section id="topStudents">
+      <h3> Top Ranked Students</h3>
+      <a href="studentsaaa.html"> chack Rank Students</a>
+      <div id="rankedStudents" class="student-grid"></div>
+    </section>
+
+    <section id="careerStudents">
+      <h3>🎓 Career Highlights</h3>
+      <a href="carerernew.html"> Students Carererr</a>
+      <div id="careerList" class="student-grid"></div>
+    </section>
+
+    <section id="allStudents">
+      <h3>📘 All Students</h3>
+      <div id="studentList" class="student-grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 ABC Institute | Developed by Jitu Loying</p>
+  </footer>
+</body>
+</html>

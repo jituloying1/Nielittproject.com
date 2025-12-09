@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABC Institute | Career Portal</title>
+  <link rel="stylesheet" href="carerernew.css">
+</head>
+<body>
+  <header>
+    <h1>ABC Institute - Career Opportunities</h1>
+  </header>
+
+  <section class="career-section">
+    <div class="job-card">
+      <h2>Software Developer Intern – TCS</h2>
+      <p><strong>Eligibility:</strong> All BCA / MCA / B.Tech students</p>
+      <p><strong>Location:</strong> Mumbai / Remote</p>
+      <button class="apply-btn" data-job="Software Developer Intern – TCS">Apply Now</button>
+    </div>
+
+    <div class="job-card">
+      <h2>Web Designer – Infosys</h2>
+      <p><strong>Eligibility:</strong> Students with HTML, CSS, JS skills</p>
+      <p><strong>Location:</strong> Bangalore</p>
+      <button class="apply-btn" data-job="Web Designer – Infosys">Apply Now</button>
+    </div>
+
+    <div class="job-card">
+      <h2>Data Analyst – Wipro</h2>
+      <p><strong>Eligibility:</strong> B.Sc / BCA / B.Tech students with Python/Excel</p>
+      <p><strong>Location:</strong> Pune</p>
+      <button class="apply-btn" data-job="Data Analyst – Wipro">Apply Now</button>
+    </div>
+  </section>
+
+  <!-- Application Form Modal -->
+  <div id="jobFormModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Job Application Form</h2>
+      <form id="applicationForm">
+        <label>Applying For:</label>
+        <input type="text" id="jobTitle" name="jobTitle" readonly>
+
+        <label>Full Name:</label>
+        <input type="text" name="name" placeholder="Enter your full name" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
+
+        <label>Phone Number:</label>
+        <input type="tel" name="phone" placeholder="Enter your phone number" required>
+
+        <label>Qualification:</label>
+        <input type="text" name="qualification" placeholder="Enter your qualification" required>
+
+        <label>Upload Resume:</label>
+        <input type="file" name="resume" accept=".pdf,.doc,.docx" required>
+
+        <button type="submit" class="submit-btn">Submit Application</button>
+      </form>
+      <p id="successMsg" class="success-message"></p>
+    </div>
+  </div>
+
+  <script src="carererrnew.js"></script>
+</body>
+</html>
