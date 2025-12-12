@@ -261,7 +261,7 @@
   function renderStudentsTable(){
     const area = document.getElementById('studentsListArea');
     if(students.length===0){
-      area.innerHTML = '<div style="color:#555">Koi student record nahi mila. (Admin login karke add karein)</div>';
+      area.innerHTML = '<div style="color:#555">Koi student record nahi mila. (please login with Admin)</div>';
       document.getElementById('resultBox').style.display = 'none';
       return;
     }
@@ -371,4 +371,5 @@
           <button onclick="openAddModal(${i})">Edit</button>
           <button class="secondary" onclick="deleteStudent(${i})">Delete</button>-->   
           <!----
+
           uporor yak paste korile moi edit ru view option open koribo parim rejult view list oty -->
