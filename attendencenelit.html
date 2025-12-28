@@ -1,169 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Student Attendance</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f9;
-        padding: 20px;
-    }
-
-    h2 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    .attendance-box {
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        max-width: 900px;
-        margin: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    table th {
-        background: #2c3e50;
-        color: #fff;
-        padding: 10px;
-        text-align: center;
-    }
-
-    table td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: center;
-    }
-
-    table tr:nth-child(even) {
-        background: #f2f2f2;
-    }
-
-    .present {
-        color: green;
-        font-weight: bold;
-    }
-
-    .absent {
-        color: red;
-        font-weight: bold;
-    }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Page</title>
+  <link rel="stylesheet" href="admincss.css">
 </head>
 <body>
+  <h2>Student Profile</h2>
+  <div id="studentInfo"></div>
 
-<h2>Student Attendance Report</h2>
-
-<div class="attendance-box">
-    <table>
-        <tr>
-            <th>Sl No</th>
-            <th>Student Name</th>
-            <th>Class</th>
-            <th>Month</th>
-            <th>Present Days</th>
-            <th>Absent Days</th>
-        </tr>
-
-        <tr>
-            <td>1</td>
-            <td>Rahul Das</td>
-            <td>Class 8</td>
-            <td>August</td>
-            <td class="present">22</td>
-            <td class="absent">4</td>
-        </tr>
-
-        <tr>
-            <td>2</td>
-            <td>Priya Sharma</td>
-            <td>Class 8</td>
-            <td>August</td>
-            <td class="present">24</td>
-            <td class="absent">2</td>
-        </tr>
-
-        <tr>
-            <td>3</td>
-            <td>Amit Kumar</td>
-            <td>Class 9</td>
-            <td>August</td>
-            <td class="present">20</td>
-            <td class="absent">6</td>
-        </tr>
-
-        <tr>
-            <td>4</td>
-            <td>Sneha Roy</td>
-            <td>Class 9</td>
-            <td>August</td>
-            <td class="present">23</td>
-            <td class="absent">3</td>
-        </tr>
-
-        <tr>
-            <td>5</td>
-            <td>Rohit Singh</td>
-            <td>Class 10</td>
-            <td>August</td>
-            <td class="present">21</td>
-            <td class="absent">5</td>
-        </tr>
-
-        <tr>
-            <td>6</td>
-            <td>Anjali Verma</td>
-            <td>Class 10</td>
-            <td>August</td>
-            <td class="present">25</td>
-            <td class="absent">1</td>
-        </tr>
-
-        <tr>
-            <td>7</td>
-            <td>Karan Patel</td>
-            <td>Class 7</td>
-            <td>August</td>
-            <td class="present">19</td>
-            <td class="absent">7</td>
-        </tr>
-
-        <tr>
-            <td>8</td>
-            <td>Neha Gupta</td>
-            <td>Class 7</td>
-            <td>August</td>
-            <td class="present">22</td>
-            <td class="absent">4</td>
-        </tr>
-
-        <tr>
-            <td>9</td>
-            <td>Arjun Mehta</td>
-            <td>Class 6</td>
-            <td>August</td>
-            <td class="present">24</td>
-            <td class="absent">2</td>
-        </tr>
-
-        <tr>
-            <td>10</td>
-            <td>Pooja Sen</td>
-            <td>Class 6</td>
-            <td>August</td>
-            <td class="present">23</td>
-            <td class="absent">3</td>
-        </tr>
-    </table>
-</div>
-
+  <script>
+    const studentData = JSON.parse(localStorage.getItem("studentData"));
+    if (studentData) {
+      document.getElementById("studentInfo").innerHTML = `
+        <img src="${studentData.photo}" alt="Student Photo" width="150">
+        <h3>${studentData.name}</h3>
+        <p>Rank: ${studentData.rank}</p>
+      `;
+    } else {
+      document.getElementById("studentInfo").innerText = "No student data found!";
+    }
+  </script>
 </body>
 </html>
