@@ -1,115 +1,274 @@
+<!-- FULL CODE WITH EXPENSE FUNCTIONALITY -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admission Form | ABC Institute</title>
-  <link rel="stylesheet" href="form-container.css">
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <script src="addmission.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JP Pig Farm Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: url('https://cdn.pixabay.com/photo/2015/09/02/13/24/piglet-918591_1280.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .container, .popup, #mainPage {
+      max-width: 500px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      box-shadow: 0 0 10px #aaa;
+      border-radius: 10px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .hidden { display: none; }
+    .btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover { background: #218838; }
+    .popup {
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      box-shadow: 0 0 10px #444;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 10px;
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 5;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+    }
+    img.thumb {
+      width: 50px; height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+    }
+    .top-bar button {
+      width: auto;
+      padding: 5px 10px;
+      margin: 0 3px;
+      font-size: 14px;
+      background: #fff;
+      color: #007bff;
+      border: 1px solid #007bff;
+      border-radius: 4px;
+    }
+    .top-bar button:hover {
+      background: #007bff;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <marquee direction="left" scrollamount="6" class="marquee-title">
-      <h1>ABC Institute - New Admission Form</h1>
-    </marquee>
-  </header>
 
-  <nav class="navbar">
-    <a href="dasboard.html">Dashboard</a>
-    <a href="index.html" class="active">Admission</a>
-    <a href="student.html">Students</a>
-    <a href="attendance.html">Attendance</a>
-    <a href="fees.html">Fees</a>
-    <a href="result.html">Results</a>
-  </nav>
+<div class="container" id="loginBox">
+  <h2>JP Pig Farm Login</h2>
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button class="btn" onclick="login()">Login</button>
+</div>
 
-  <main class="form-container">
-    <h2>Student Admission Form</h2>
-    <form id="admissionForm" enctype="multipart/form-data">
+<div id="mainPage" class="container hidden">
+  <div class="top-bar">
+    <span><strong>🐗 JP Pig Farm Dashboard</strong></span>
+    <div><button onclick="logout()">Logout</button></div>
+  </div>
 
-      <fieldset>
-        <legend>Student Details</legend>
-        <input type="text" name="firstName" placeholder="First Name" required>
-        <input type="text" name="middleName" placeholder="Middle Name">
-        <input type="text" name="lastName" placeholder="Last Name">
-        <label>Date of Birth:</label>
-        <input type="date" name="dob" required>
-        <input type="tel" name="phone" placeholder="Student Phone Number" required>
-        <input type="tel" name="fatherPhone" placeholder="Father's Phone Number">
-        <input type="tel" name="emergencyContact" placeholder="Emergency Contact Number">
-      </fieldset>
+  <button class="btn" onclick="togglePopup('pigFormPopup', true)">➕ Add New Pig</button>
+  <button class="btn" onclick="toggleSection('pigList')">🐷 Pig List</button>
 
-      <fieldset>
-        <legend>Parent Details</legend>
-        <input type="text" name="fatherFirst" placeholder="Father's First Name" required>
-        <input type="text" name="fatherMiddle" placeholder="Father's Middle Name">
-        <input type="text" name="fatherLast" placeholder="Father's Last Name">
-        <input type="text" name="motherFirst" placeholder="Mother's First Name" required>
-        <input type="text" name="motherMiddle" placeholder="Mother's Middle Name">
-        <input type="text" name="motherLast" placeholder="Mother's Last Name">
-      </fieldset>
+  <button class="btn" onclick="togglePopup('salesFormPopup', true)">💰 Add Sale</button>
+  <button class="btn" onclick="toggleSection('salesList')">📄 Sales List</button>
 
-      <fieldset>
-        <legend>Address Details</legend>
-        <input type="text" name="postOffice" placeholder="Post Office">
-        <input type="text" name="pinCode" placeholder="PIN Code">
-        <input type="text" name="district" placeholder="District">
-        <input type="text" name="state" placeholder="State">
-        <input type="text" name="country" placeholder="Country">
-      </fieldset>
+  <button class="btn" onclick="togglePopup('expenseFormPopup', true)">➖ Add Expense</button>
+  <button class="btn" onclick="toggleSection('expenseList')">📋 Expense List</button>
 
-      <fieldset>
-        <legend>Previous Education</legend>
-        <input type="text" name="previousClass" placeholder="Previous Passout Class">
-        <input type="number" name="totalMarks" placeholder="Total Marks">
-        <input type="number" step="0.01" name="percentage" placeholder="Percentage (%)">
-      </fieldset>
+  <div id="pigList" class="hidden">
+    <h3>🐷 Pig List</h3>
+    <table><thead><tr><th>#</th><th>Name</th><th>Weight</th><th>Gender</th><th>Time</th><th>Image</th><th>Action</th></tr></thead><tbody id="pigTableBody"></tbody></table>
+  </div>
 
-      <fieldset>
-        <legend>Documents Upload</legend>
-        <label>Passport Size Photo:</label>
-        <input type="file" name="photo" accept=".jpg,.jpeg,.png,.pdf" required>
-        <label>Signature:</label>
-        <input type="file" name="signature" accept=".jpg,.jpeg,.png,.pdf">
-        <label>Marksheet:</label>
-        <input type="file" name="marksheet" accept=".jpg,.jpeg,.png,.pdf">
-        <label>Certificate:</label>
-        <input type="file" name="certificate" accept=".jpg,.jpeg,.png,.pdf">
-        <label>Income Certificate:</label>
-        <input type="file" name="income" accept=".jpg,.jpeg,.png,.pdf">
-        <label>Caste Certificate:</label>
-        <input type="file" name="caste" accept=".jpg,.jpeg,.png,.pdf">
-        <label>Permanent Residence Certificate:</label>
-        <input type="file" name="residence" accept=".jpg,.jpeg,.png,.pdf">
-      </fieldset>
+  <div id="salesList" class="hidden">
+    <h3>💰 Sales List</h3>
+    <table><thead><tr><th>#</th><th>Item</th><th>KG</th><th>Customer</th><th>Price</th><th>Payment</th><th>Time</th><th>Action</th></tr></thead><tbody id="salesTableBody"></tbody></table>
+  </div>
 
-      <fieldset>
-        <legend>Payment</legend>
-        <p>Scan to Pay Admission Fees</p>
-        <div id="qrcode"></div>
-      </fieldset>
+  <div id="expenseList" class="hidden">
+    <h3>📋 Expense List</h3>
+    <table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>Payment</th><th>Time</th></tr></thead><tbody id="expenseTableBody"></tbody></table>
+  </div>
+</div>
 
-      <div class="form-buttons">
-        <button type="button" id="saveDraft">💾 Save as Draft</button>
-        <button type="button" id="previewForm">👁 Preview</button>
-        <button type="submit">✅ Submit</button>
-      </div>
-    </form>
+<!-- Popups -->
+<div id="pigFormPopup" class="popup hidden">
+  <h3>Add New Pig</h3>
+  <input type="text" id="pigName" placeholder="Pig Name">
+  <input type="number" id="pigWeight" placeholder="Weight (kg)">
+  <select id="pigGender"><option value="">Select Gender</option><option>Male</option><option>Female</option></select>
+  <input type="file" id="pigImage" accept="image/*">
+  <button class="btn" onclick="addPig()">Save Pig</button>
+  <button onclick="togglePopup('pigFormPopup')">Close</button>
+</div>
 
-    <!-- Preview Modal -->
-    <div id="previewModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Admission Form Preview</h3>
-        <div id="previewContent"></div>
-        <button id="confirmSubmit">Confirm & Submit</button>
-      </div> 
-    </div>
-  </main>
+<div id="salesFormPopup" class="popup hidden">
+  <h3>Add Sale</h3>
+  <input type="text" id="saleItem" placeholder="Sales Item Name">
+  <input type="number" id="saleKg" placeholder="Weight (kg)">
+  <input type="text" id="customerName" placeholder="Customer Name">
+  <input type="number" id="salePrice" placeholder="Price (₹)">
+  <select id="paymentMode"><option value="">Payment Mode</option><option>Cash</option><option>UPI</option><option>Bank Transfer</option></select>
+  <button class="btn" onclick="addSale()">Save Sale</button>
+  <button onclick="togglePopup('salesFormPopup')">Close</button>
+</div>
 
-  <footer>
-    <p>© 2025 ABC Institute | Designed by Loying Developer</p>
-  </footer>
+<div id="expenseFormPopup" class="popup hidden">
+  <h3>Add Expense</h3>
+  <input type="text" id="expenseItem" placeholder="Item Name">
+  <input type="number" id="expenseQty" placeholder="Quantity">
+  <input type="number" id="expensePrice" placeholder="Price (₹)">
+  <select id="expensePayment"><option value="">Payment Mode</option><option>Cash</option><option>UPI</option><option>Bank Transfer</option></select>
+  <button class="btn" onclick="addExpense()">Save Expense</button>
+  <button onclick="togglePopup('expenseFormPopup')">Close</button>
+</div>
+
+<div id="overlay"></div>
+
+<script>
+  let pigs = JSON.parse(localStorage.getItem("pigs") || "[]");
+  let sales = JSON.parse(localStorage.getItem("sales") || "[]");
+  let expenses = JSON.parse(localStorage.getItem("expenses") || "[]");
+
+  window.onload = () => {
+    if (localStorage.getItem("loggedIn") === "true") {
+      loginBox.style.display = "none";
+      mainPage.classList.remove("hidden");
+      loadPigList(); loadSalesList(); loadExpenseList();
+    }
+  };
+
+  function login() {
+    if (loginUser.value === "Jituloying" && loginPass.value === "7896") {
+      localStorage.setItem("loggedIn", "true");
+      loginBox.style.display = "none";
+      mainPage.classList.remove("hidden");
+      loadPigList(); loadSalesList(); loadExpenseList();
+    } else alert("Login Failed!");
+  }
+
+  function logout() {
+    localStorage.removeItem("loggedIn");
+    loginBox.style.display = "block";
+    mainPage.classList.add("hidden");
+  }
+
+  function togglePopup(id, show = false) {
+    document.getElementById(id).classList.toggle("hidden");
+    overlay.style.display = show ? "block" : "none";
+  }
+
+  function toggleSection(id) {
+    document.getElementById(id).classList.toggle("hidden");
+  }
+
+  function addPig() {
+    const name = pigName.value.trim(), weight = pigWeight.value, gender = pigGender.value, file = pigImage.files[0];
+    if (!name || !weight || !gender || !file) return alert("Fill all fields");
+    const reader = new FileReader();
+    reader.onload = e => {
+      pigs.push({ name, weight, gender, image: e.target.result, time: new Date().toLocaleString() });
+      localStorage.setItem("pigs", JSON.stringify(pigs));
+      loadPigList(); togglePopup('pigFormPopup');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function loadPigList() {
+    pigTableBody.innerHTML = '';
+    pigs.forEach((p, i) => {
+      pigTableBody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.weight}</td><td>${p.gender}</td><td>${p.time}</td><td><img src="${p.image}" class="thumb"></td><td><button class="btn" onclick="printPig(${i})">🖨️</button></td></tr>`;
+    });
+  }
+
+  function printPig(i) {
+    const p = pigs[i];
+    const w = window.open();
+    w.document.write(`<h2>Pig Details</h2><p>Name: ${p.name}</p><p>Weight: ${p.weight}</p><p>Gender: ${p.gender}</p><p>Time: ${p.time}</p><img src="${p.image}" width="150"/>`);
+    w.print(); w.close();
+  }
+
+  function addSale() {
+    const item = saleItem.value, kg = saleKg.value, customer = customerName.value, price = salePrice.value, mode = paymentMode.value;
+    if (!item || !kg || !customer || !price || !mode) return alert("Fill all fields");
+    sales.push({ item, kg, customer, price, mode, time: new Date().toLocaleString() });
+    localStorage.setItem("sales", JSON.stringify(sales));
+    loadSalesList(); togglePopup('salesFormPopup');
+  }
+
+  function loadSalesList() {
+    salesTableBody.innerHTML = '';
+    sales.forEach((s, i) => {
+      salesTableBody.innerHTML += `<tr><td>${i+1}</td><td>${s.item}</td><td>${s.kg}</td><td>${s.customer}</td><td>₹${s.price}</td><td>${s.mode}</td><td>${s.time}</td><td><button class="btn" onclick="printSale(${i})">🖨️</button></td></tr>`;
+    });
+  }
+
+  function printSale(i) {
+    const s = sales[i];
+    const w = window.open();
+    w.document.write(`<h2>Sale Receipt</h2><p>Item: ${s.item}</p><p>Weight: ${s.kg} kg</p><p>Customer: ${s.customer}</p><p>Price: ₹${s.price}</p><p>Payment: ${s.mode}</p><p>Time: ${s.time}</p>`);
+    w.print(); w.close();
+  }
+
+  function addExpense() {
+    const item = expenseItem.value, qty = expenseQty.value, price = expensePrice.value, payment = expensePayment.value;
+    if (!item || !qty || !price || !payment) return alert("Fill all fields");
+    expenses.push({ item, qty, price, payment, time: new Date().toLocaleString() });
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    loadExpenseList(); togglePopup('expenseFormPopup');
+  }
+
+  function loadExpenseList() {
+    expenseTableBody.innerHTML = '';
+    expenses.forEach((e, i) => {
+      expenseTableBody.innerHTML += `<tr><td>${i+1}</td><td>${e.item}</td><td>${e.qty}</td><td>₹${e.price}</td><td>${e.payment}</td><td>${e.time}</td></tr>`;
+    });
+  }
+</script>
+
 </body>
 </html>
