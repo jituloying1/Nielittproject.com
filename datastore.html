@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ABC School Data Store</title>
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:40px;}
+table{border-collapse:collapse;width:100%;background:white;}
+th,td{border:1px solid #ddd;padding:8px;text-align:center;}
+th{background:#007BFF;color:white;}
+img{width:50px;height:50px;}
+button{padding:6px 10px;margin:3px;cursor:pointer;}
+</style>
+
+<script>
+let users = [];
+
+function loadData(){
+  users = JSON.parse(localStorage.getItem("users")) || [];
+  let table = "";
+  users.forEach((u,index)=>{
+    table+=`
+<tr>
+<td>${u.appID}</td>
+<td>${u.name}</td>
+<td>${u.father}</td>
+<td>${u.mother}</td>
+<td>${u.post}</td>
+<td>${u.applydate}</td>
+<td>${u.photo ? '<img src="'+u.photo+'">' : ''}</td>
+<td>${u.signature ? '<img src="'+u.signature+'">' : ''}</td>
+<td>${u.marksheet ? '<a href="'+u.marksheet+'" target="_blank">View</a>' : ''}</td>
+<td>${u.birth ? '<a href="'+u.birth+'" target="_blank">View</a>' : ''}</td>
+<td>${u.admit ? '<a href="'+u.admit+'" target="_blank">View</a>' : ''}</td>
+<td><button onclick="editUser(${index})">Edit</button></td>
+</tr>
+`;
+  });
+  document.getElementById("data").innerHTML = table;
+}
+
+function editUser(index){
+  localStorage.setItem("editIndex", index);
+  window.location.href = "edit.html";
+}
+
+function downloadExcel(){
+  let csv = "AppID,Name,Father,Mother,Post,Date,Photo,Signature,Marksheet,Birth,Admit\n";
+  users.forEach(u=>{
+    csv += `"${u.appID}","${u.name}","${u.father}","${u.mother}","${u.post}","${u.applydate}","${u.photo}","${u.signature}","${u.marksheet}","${u.birth}","${u.admit}"\n`;
+  });
+  let blob = new Blob([csv],{type:"text/csv"});
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "ABC_School_Data.csv";
+  a.click();
+}
+</script>
+
+</head>
+<body onload="loadData()">
+
+<h2>ABC School Applicant Data Store</h2>
+<button onclick="downloadExcel()">Download Excel</button>
+
+<table>
+<tr>
+<th>App ID</th>
+<th>Name</th>
+<th>Father</th>
+<th>Mother</th>
+<th>Post</th>
+<th>Date</th>
+<th>Photo</th>
+<th>Signature</th>
+<th>Marksheet</th>
+<th>Birth</th>
+<th>Admit</th>
+<th>Edit</th>
+</tr>
+<tbody id="data"></tbody>
+</table>
+
+</body>
+</html>
