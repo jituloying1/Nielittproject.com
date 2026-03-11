@@ -1,131 +1,101 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>ABC School Data Store</title>
+
 <style>
+
 body{font-family:Arial;background:#f2f2f2;padding:40px;}
-table{border-collapse:collapse;width:100%;background:white;}
-th,td{border:1px solid #ddd;padding:8px;text-align:center;}
-th{background:#007BFF;color:white;}
-img{width:50px;height:50px;}
-button{padding:6px 10px;margin:3px;cursor:pointer;border:none;border-radius:4px;}
-button.edit{background:#007BFF;color:white;}
-button.delete{background:#b30000;color:white;}
-button.download{background:#28a745;color:white;}
-input#search{padding:8px;width:250px;margin-bottom:15px;border-radius:4px;border:1px solid #ccc;}
-.highlight{background:yellow;}
+.container{width:95%;margin:auto;background:white;padding:20px;border-radius:8px;}
+
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+
+th,td{border:1px solid black;padding:8px;text-align:center;}
+
+img{width:60px;height:60px;}
+
+button{padding:6px 10px;background:red;color:white;border:none}
+
 </style>
+
+<script>
+
+function loadData(){
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+
+let table=document.getElementById("data");
+
+users.forEach((u,i)=>{
+
+let row=table.insertRow();
+
+row.insertCell(0).innerHTML=u.appID;
+row.insertCell(1).innerHTML=u.name;
+row.insertCell(2).innerHTML=u.father;
+row.insertCell(3).innerHTML=u.mother;
+row.insertCell(4).innerHTML=u.dob;
+row.insertCell(5).innerHTML=u.post;
+
+row.insertCell(6).innerHTML=u.photo?`<img src="${u.photo}">`:"";
+row.insertCell(7).innerHTML=u.signature?`<img src="${u.signature}">`:"";
+
+row.insertCell(8).innerHTML=`<button onclick="deleteUser(${i})">Delete</button>`;
+
+});
+
+}
+
+function deleteUser(i){
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+
+users.splice(i,1);
+
+localStorage.setItem("users",JSON.stringify(users));
+
+location.reload();
+
+}
+
+window.onload=loadData;
+
+</script>
+
 </head>
-<body onload="loadData()">
 
-<h2>ABC School Applicant Data Store</h2>
+<body>
 
-<!-- Search Box -->
-<input type="text" id="search" placeholder="Search by AppID, Name, or DOB" onkeyup="searchData()">
+<div class="container">
 
-<button class="download" onclick="downloadExcel()">Download Excel</button>
-<button class="delete" onclick="deleteAll()">Delete All Data</button>
-<br><br>
+<h2>ABC School Application Data</h2>
 
-<table>
+<table id="data">
+
 <tr>
-<th>App ID</th>
+
+<th>ID</th>
 <th>Name</th>
 <th>Father</th>
 <th>Mother</th>
+<th>DOB</th>
 <th>Post</th>
-<th>Date</th>
 <th>Photo</th>
-<th>Signature</th>
-<th>Marksheet</th>
-<th>Birth</th>
-<th>Admit</th>
-<th>Actions</th>
+<th>Sign</th>
+<th>Action</th>
+
 </tr>
-<tbody id="data"></tbody>
+
 </table>
 
-<script>
-let users = [];
+<br>
 
-function loadData(){
-  users = JSON.parse(localStorage.getItem("users")) || [];
-  displayData(users);
-}
+<a href="index.html">
+<button style="background:green">Back To Form</button>
+</a>
 
-function displayData(dataArray){
-  let table = "";
-  dataArray.forEach((u,index)=>{
-    table+=`
-<tr>
-<td>${u.appID}</td>
-<td>${u.name}</td>
-<td>${u.father}</td>
-<td>${u.mother}</td>
-<td>${u.post}</td>
-<td>${u.applydate}</td>
-<td>${u.photo ? '<img src="'+u.photo+'">' : ''}</td>
-<td>${u.signature ? '<img src="'+u.signature+'">' : ''}</td>
-<td>${u.marksheet ? '<a href="'+u.marksheet+'" target="_blank">View</a>' : ''}</td>
-<td>${u.birth ? '<a href="'+u.birth+'" target="_blank">View</a>' : ''}</td>
-<td>${u.admit ? '<a href="'+u.admit+'" target="_blank">View</a>' : ''}</td>
-<td>
-  <button class="edit" onclick="editUser(${index})">Edit</button>
-  <button class="delete" onclick="deleteUser(${index})">Delete</button>
-</td>
-</tr>
-`;
-  });
-  document.getElementById("data").innerHTML = table;
-}
-
-function editUser(index){
-  localStorage.setItem("editIndex", index);
-  window.location.href = "edit.html"; // redirect to edit page
-}
-
-function deleteUser(index){
-  if(confirm("Are you sure you want to delete this record?")){
-    users.splice(index, 1);
-    localStorage.setItem("users", JSON.stringify(users));
-    loadData();
-  }
-}
-
-function deleteAll(){
-  if(confirm("Are you sure you want to delete ALL records?")){
-    localStorage.removeItem("users");
-    loadData();
-  }
-}
-
-function downloadExcel(){
-  if(users.length === 0){
-    alert("No data to download!");
-    return;
-  }
-  let csv = "AppID,Name,Father,Mother,Post,Date,Photo,Signature,Marksheet,Birth,Admit\n";
-  users.forEach(u=>{
-    csv += `"${u.appID}","${u.name}","${u.father}","${u.mother}","${u.post}","${u.applydate}","${u.photo}","${u.signature}","${u.marksheet}","${u.birth}","${u.admit}"\n`;
-  });
-  let blob = new Blob([csv],{type:"text/csv"});
-  let a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "ABC_School_Data.csv";
-  a.click();
-}
-
-// Search Function
-function searchData(){
-  let input = document.getElementById("search").value.toLowerCase();
-  let filtered = users.filter(u => 
-    u.appID.toLowerCase().includes(input) ||
-    u.name.toLowerCase().includes(input) ||
-    u.dob.toLowerCase().includes(input)
-  );
-  displayData(filtered);
-}
-</script>
+</div>
 
 </body>
 </html>
