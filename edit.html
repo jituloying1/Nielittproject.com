@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Applicant</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+padding:40px;
+}
+
+.container{
+width:600px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:8px;
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin:8px 0;
+}
+
+button{
+padding:10px;
+background:#007BFF;
+color:white;
+border:none;
+cursor:pointer;
+width:100%;
+}
+
+</style>
+
+<script>
+
+let users=[];
+let index;
+
+function loadUser(){
+
+users=JSON.parse(localStorage.getItem("users"))||[];
+
+index=localStorage.getItem("editIndex");
+
+let u=users[index];
+
+name.value=u.name;
+father.value=u.father;
+mother.value=u.mother;
+post.value=u.post;
+applydate.value=u.applydate;
+
+}
+
+function saveUser(){
+
+users[index].name=name.value;
+users[index].father=father.value;
+users[index].mother=mother.value;
+users[index].post=post.value;
+users[index].applydate=applydate.value;
+
+localStorage.setItem("users",JSON.stringify(users));
+
+alert("Data Updated Successfully");
+
+window.location.href="datastore.html";
+
+}
+
+</script>
+
+</head>
+
+<body onload="loadUser()">
+
+<div class="container">
+
+<h2>Edit Applicant Details</h2>
+
+Name
+<input type="text" id="name">
+
+Father
+<input type="text" id="father">
+
+Mother
+<input type="text" id="mother">
+
+Post
+<select id="post">
+<option>Peon</option>
+<option>Front Desk</option>
+<option>Website Design Faculty</option>
+<option>Python Faculty</option>
+<option>IOT Faculty</option>
+<option>Model Faculty</option>
+<option>English Teacher</option>
+</select>
+
+Apply Date
+<input type="date" id="applydate">
+
+<br>
+
+<button onclick="saveUser()">Save Changes</button>
+
+</div>
+
+</body>
+</html>
