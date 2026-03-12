@@ -69,6 +69,7 @@ select, input { padding: 5px; }
 <h2>ABC School - Student Attendance</h2>
 
 <button class="control" onclick="openAttendanceControl()">Attendance Control</button>
+
 <table>
 <tr>
     <th>Student ID</th>
@@ -82,8 +83,6 @@ select, input { padding: 5px; }
 </tr>
 <tbody id="attendanceData"></tbody>
 </table>
-
-<button class="download" onclick="downloadCSV()">Download CSV</button>
 
 <!-- Attendance Control Modal -->
 <div id="attendanceModal" class="modal">
@@ -102,7 +101,9 @@ select, input { padding: 5px; }
     </form>
     <br>
     Filter by Month:
-    <input type="month" id="filterMonth" onchange="filterByMonth()">
+    <input type="month" id="filterMonth" onchange="filterByMonth()"><br><br>
+    <!-- Download CSV button inside modal -->
+    <button class="download" onclick="downloadCSV()">Download CSV</button>
   </div>
 </div>
 
