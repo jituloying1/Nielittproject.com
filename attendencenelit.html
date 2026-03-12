@@ -119,21 +119,10 @@ function applyFilters(){
     displayAttendance(filtered);
 }
 
-// Download CSV
-function downloadCSV(){
-    let csv = "Roll No,Name,Class,Date,Present Days,Absent Days,Holidays,Total Days\n";
-    attendanceRecords.forEach(r=>{
-        let total = r.present + r.absent + r.holidays;
-        csv += `"${r.rollNo}","${r.name}","${r.className}","${r.date}","${r.present}","${r.absent}","${r.holidays}","${total}"\n`;
-    });
-    let blob = new Blob([csv], {type:"text/csv"});
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "Student_Attendance.csv";
-    a.click();
-}
+
 </script>
 
 </body>
 </html>
+
 
