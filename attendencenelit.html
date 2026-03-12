@@ -8,13 +8,36 @@ h2 { text-align: center; color: #007BFF; }
 table { border-collapse: collapse; width: 100%; background: white; margin-bottom: 20px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
 th { background: #007BFF; color: white; }
+select, input[type="date"] { padding: 5px; margin: 5px; }
 button { padding: 6px 10px; margin: 5px; cursor: pointer; border: none; border-radius: 4px; }
 button.download { background: #17a2b8; color: white; }
+.filter-container { margin-bottom: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
 </style>
 </head>
 <body onload="loadAttendance()">
 
 <h2>ABC School - Student Attendance</h2>
+
+<div class="filter-container">
+    <label>Student ID: 
+        <select id="filterID" onchange="applyFilters()">
+            <option value="">All</option>
+        </select>
+    </label>
+    <label>Name: 
+        <select id="filterName" onchange="applyFilters()">
+            <option value="">All</option>
+        </select>
+    </label>
+    <label>Class: 
+        <select id="filterClass" onchange="applyFilters()">
+            <option value="">All</option>
+        </select>
+    </label>
+    <label>Date: 
+        <input type="date" id="filterDate" onchange="applyFilters()">
+    </label>
+</div>
 
 <table>
 <tr>
@@ -30,14 +53,18 @@ button.download { background: #17a2b8; color: white; }
 <tbody id="attendanceData"></tbody>
 </table>
 
+<button class="download" onclick="downloadCSV()">Download CSV</button>
+
 <script>
 let attendanceRecords = [];
 
 function loadAttendance(){
     attendanceRecords = JSON.parse(localStorage.getItem("attendanceRecords")) || [];
+    populateFilters();
     displayAttendance(attendanceRecords);
 }
 
+// Display table
 function displayAttendance(records){
     let tbody = "";
     records.forEach(r=>{
@@ -56,6 +83,43 @@ function displayAttendance(records){
     document.getElementById("attendanceData").innerHTML = tbody;
 }
 
+// Populate dropdown filters
+function populateFilters(){
+    let ids = [...new Set(attendanceRecords.map(r=>r.rollNo))];
+    let names = [...new Set(attendanceRecords.map(r=>r.name))];
+    let classes = [...new Set(attendanceRecords.map(r=>r.className))];
+
+    let idSelect = document.getElementById("filterID");
+    let nameSelect = document.getElementById("filterName");
+    let classSelect = document.getElementById("filterClass");
+
+    // Clear old options
+    idSelect.innerHTML = '<option value="">All</option>';
+    nameSelect.innerHTML = '<option value="">All</option>';
+    classSelect.innerHTML = '<option value="">All</option>';
+
+    ids.forEach(id=>{ idSelect.innerHTML += `<option value="${id}">${id}</option>`; });
+    names.forEach(name=>{ nameSelect.innerHTML += `<option value="${name}">${name}</option>`; });
+    classes.forEach(cls=>{ classSelect.innerHTML += `<option value="${cls}">${cls}</option>`; });
+}
+
+// Filter table based on dropdowns and date
+function applyFilters(){
+    let id = document.getElementById("filterID").value;
+    let name = document.getElementById("filterName").value;
+    let cls = document.getElementById("filterClass").value;
+    let date = document.getElementById("filterDate").value;
+
+    let filtered = attendanceRecords.filter(r=>{
+        return (id === "" || r.rollNo === id) &&
+               (name === "" || r.name === name) &&
+               (cls === "" || r.className === cls) &&
+               (date === "" || r.date === date);
+    });
+    displayAttendance(filtered);
+}
+
+// Download CSV
 function downloadCSV(){
     let csv = "Roll No,Name,Class,Date,Present Days,Absent Days,Holidays,Total Days\n";
     attendanceRecords.forEach(r=>{
@@ -72,4 +136,3 @@ function downloadCSV(){
 
 </body>
 </html>
-
