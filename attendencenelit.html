@@ -1,169 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Student Attendance</title>
+<title>ABC School Student Attendance</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f9;
-        padding: 20px;
-    }
-
-    h2 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    .attendance-box {
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        max-width: 900px;
-        margin: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    table th {
-        background: #2c3e50;
-        color: #fff;
-        padding: 10px;
-        text-align: center;
-    }
-
-    table td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: center;
-    }
-
-    table tr:nth-child(even) {
-        background: #f2f2f2;
-    }
-
-    .present {
-        color: green;
-        font-weight: bold;
-    }
-
-    .absent {
-        color: red;
-        font-weight: bold;
-    }
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    padding: 40px;
+}
+h2 {
+    text-align: center;
+    color: #007BFF;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+    margin-bottom: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+th {
+    background: #007BFF;
+    color: white;
+}
+button {
+    padding: 6px 10px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+button.save { background: #28a745; color: white; }
+button.download { background: #17a2b8; color: white; }
+button.control { background: #ffc107; color: white; }
+select, input { padding: 5px; }
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0; top: 0; 
+    width: 100%; height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px; 
+    border: 1px solid #888;
+    width: 600px;
+    border-radius: 8px;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
 </style>
 </head>
-<body>
+<body onload="loadAttendance()">
 
-<h2>Student Attendance Report</h2>
+<h2>ABC School - Student Attendance</h2>
 
-<div class="attendance-box">
-    <table>
-        <tr>
-            <th>Sl No</th>
-            <th>Student Name</th>
-            <th>Class</th>
-            <th>Month</th>
-            <th>Present Days</th>
-            <th>Absent Days</th>
-        </tr>
+<button class="control" onclick="openAttendanceControl()">Attendance Control</button>
+<table>
+<tr>
+    <th>Student ID</th>
+    <th>Name</th>
+    <th>Class</th>
+    <th>Date</th>
+    <th>Present Days</th>
+    <th>Absent Days</th>
+    <th>Holidays</th>
+    <th>Total Days</th>
+</tr>
+<tbody id="attendanceData"></tbody>
+</table>
 
-        <tr>
-            <td>1</td>
-            <td>Rahul Das</td>
-            <td>Class 8</td>
-            <td>August</td>
-            <td class="present">22</td>
-            <td class="absent">4</td>
-        </tr>
+<button class="download" onclick="downloadCSV()">Download CSV</button>
 
-        <tr>
-            <td>2</td>
-            <td>Priya Sharma</td>
-            <td>Class 8</td>
-            <td>August</td>
-            <td class="present">24</td>
-            <td class="absent">2</td>
-        </tr>
-
-        <tr>
-            <td>3</td>
-            <td>Amit Kumar</td>
-            <td>Class 9</td>
-            <td>August</td>
-            <td class="present">20</td>
-            <td class="absent">6</td>
-        </tr>
-
-        <tr>
-            <td>4</td>
-            <td>Sneha Roy</td>
-            <td>Class 9</td>
-            <td>August</td>
-            <td class="present">23</td>
-            <td class="absent">3</td>
-        </tr>
-
-        <tr>
-            <td>5</td>
-            <td>Rohit Singh</td>
-            <td>Class 10</td>
-            <td>August</td>
-            <td class="present">21</td>
-            <td class="absent">5</td>
-        </tr>
-
-        <tr>
-            <td>6</td>
-            <td>Anjali Verma</td>
-            <td>Class 10</td>
-            <td>August</td>
-            <td class="present">25</td>
-            <td class="absent">1</td>
-        </tr>
-
-        <tr>
-            <td>7</td>
-            <td>Karan Patel</td>
-            <td>Class 7</td>
-            <td>August</td>
-            <td class="present">19</td>
-            <td class="absent">7</td>
-        </tr>
-
-        <tr>
-            <td>8</td>
-            <td>Neha Gupta</td>
-            <td>Class 7</td>
-            <td>August</td>
-            <td class="present">22</td>
-            <td class="absent">4</td>
-        </tr>
-
-        <tr>
-            <td>9</td>
-            <td>Arjun Mehta</td>
-            <td>Class 6</td>
-            <td>August</td>
-            <td class="present">24</td>
-            <td class="absent">2</td>
-        </tr>
-
-        <tr>
-            <td>10</td>
-            <td>Pooja Sen</td>
-            <td>Class 6</td>
-            <td>August</td>
-            <td class="present">23</td>
-            <td class="absent">3</td>
-        </tr>
-    </table>
+<!-- Attendance Control Modal -->
+<div id="attendanceModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeAttendanceControl()">&times;</span>
+    <h3>Attendance Control</h3>
+    <form id="attendanceForm" onsubmit="addAttendance(event)">
+      Name: <input type="text" id="studentName" required><br>
+      Roll No: <input type="text" id="rollNo" required><br>
+      Class: <input type="text" id="className" required><br>
+      Date: <input type="date" id="attendanceDate" required><br>
+      Present Days (P): <input type="number" id="presentDays" min="0" value="0"><br>
+      Absent Days (A): <input type="number" id="absentDays" min="0" value="0"><br>
+      Holidays (H): <input type="number" id="holidays" min="0" value="0"><br>
+      <button type="submit" class="save">Add Attendance</button>
+    </form>
+    <br>
+    Filter by Month:
+    <input type="month" id="filterMonth" onchange="filterByMonth()">
+  </div>
 </div>
+
+<script>
+let attendanceRecords = [];
+
+// Load from localStorage
+function loadAttendance(){
+    attendanceRecords = JSON.parse(localStorage.getItem("attendanceRecords")) || [];
+    displayAttendance(attendanceRecords);
+}
+
+function displayAttendance(records){
+    let tbody = "";
+    records.forEach((r,index)=>{
+        let totalDays = r.present + r.absent + r.holidays;
+        tbody += `
+        <tr>
+            <td>${r.rollNo}</td>
+            <td>${r.name}</td>
+            <td>${r.className}</td>
+            <td>${r.date}</td>
+            <td>${r.present}</td>
+            <td>${r.absent}</td>
+            <td>${r.holidays}</td>
+            <td>${totalDays}</td>
+        </tr>
+        `;
+    });
+    document.getElementById("attendanceData").innerHTML = tbody;
+}
+
+// Modal open/close
+function openAttendanceControl(){ document.getElementById("attendanceModal").style.display = "block"; }
+function closeAttendanceControl(){ document.getElementById("attendanceModal").style.display = "none"; }
+
+// Add new attendance record
+function addAttendance(event){
+    event.preventDefault();
+    let record = {
+        name: document.getElementById("studentName").value,
+        rollNo: document.getElementById("rollNo").value,
+        className: document.getElementById("className").value,
+        date: document.getElementById("attendanceDate").value,
+        present: parseInt(document.getElementById("presentDays").value) || 0,
+        absent: parseInt(document.getElementById("absentDays").value) || 0,
+        holidays: parseInt(document.getElementById("holidays").value) || 0
+    };
+    attendanceRecords.push(record);
+    localStorage.setItem("attendanceRecords", JSON.stringify(attendanceRecords));
+    displayAttendance(attendanceRecords);
+    document.getElementById("attendanceForm").reset();
+}
+
+// Filter by month
+function filterByMonth(){
+    let monthValue = document.getElementById("filterMonth").value; // yyyy-mm
+    let filtered = attendanceRecords.filter(r => r.date.startsWith(monthValue));
+    displayAttendance(filtered);
+}
+
+// Download CSV
+function downloadCSV(){
+    let csv = "Roll No,Name,Class,Date,Present Days,Absent Days,Holidays,Total Days\n";
+    attendanceRecords.forEach(r=>{
+        let totalDays = r.present + r.absent + r.holidays;
+        csv += `"${r.rollNo}","${r.name}","${r.className}","${r.date}","${r.present}","${r.absent}","${r.holidays}","${totalDays}"\n`;
+    });
+    let blob = new Blob([csv], {type:"text/csv"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "Student_Attendance.csv";
+    a.click();
+}
+
+// Close modal if clicked outside
+window.onclick = function(event) {
+    let modal = document.getElementById("attendanceModal");
+    if(event.target == modal){ modal.style.display = "none"; }
+}
+</script>
 
 </body>
 </html>
