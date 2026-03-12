@@ -1,97 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Large Attendance Sheet</title>
+<title>ABC School - Attendance Control</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
-    margin: 20px;
-  }
-  h1 {
-    text-align: center;
-    color: #333;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #fff;
-  }
-  th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-  }
-  th {
-    background-color: #4CAF50;
-    color: white;
-    position: sticky;
-    top: 0;
-  }
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  button {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  .table-container {
-    max-height: 500px;
-    overflow-y: scroll;
-  }
+body { font-family: Arial; background: #f2f2f2; padding: 40px; }
+h2 { text-align: center; color: #007BFF; }
+form { background: white; padding: 20px; border-radius: 8px; width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.2);}
+input, select, button { width: 100%; padding: 8px; margin: 8px 0; }
+button.save { background: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; }
 </style>
 </head>
-<body>
+<body onload="loadAttendance()">
 
-<h1>Attendance Sheet - 200 Students</h1>
-<button onclick="generateAttendance()">Generate Random Attendance</button>
-<div class="table-container">
-<table id="attendanceTable">
-  <thead>
-    <tr>
-      <th>Student ID</th>
-      <th>Name</th>
-      <th>Present Days</th>
-      <th>Absent Days</th>
-      <th>Government Holiday</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Generated rows will appear here -->
-  </tbody>
+<h2>ABC School - Attendance Control</h2>
+
+<form onsubmit="addAttendance(event)">
+    Name: <input type="text" id="studentName" required>
+    Roll No: <input type="text" id="rollNo" required>
+    Class: <input type="text" id="className" required>
+    Date: <input type="date" id="attendanceDate" required>
+    Present Days (P): <input type="number" id="presentDays" min="0" value="0">
+    Absent Days (A): <input type="number" id="absentDays" min="0" value="0">
+    Holidays (H): <input type="number" id="holidays" min="0" value="0">
+    <button type="submit" class="save">Add Attendance</button>
+</form>
+
+<br>
+Filter by Month: <input type="month" id="filterMonth" onchange="filterByMonth()">
+
+<table>
+<tr>
+    <th>Roll No</th>
+    <th>Name</th>
+    <th>Class</th>
+    <th>Date</th>
+    <th>Present Days</th>
+    <th>Absent Days</th>
+    <th>Holidays</th>
+    <th>Total Days</th>
+</tr>
+<tbody id="attendanceData"></tbody>
 </table>
-</div>
+
+<button onclick="downloadCSV()" class="save">Download CSV</button>
 
 <script>
-function generateAttendance() {
-    const tbody = document.querySelector("#attendanceTable tbody");
-    tbody.innerHTML = ""; // clear previous rows
-    const numStudents = 200;
-    const daysInMonth = 30;
+let attendanceRecords = [];
 
-    for (let i = 1; i <= numStudents; i++) {
-        const studentId = S${String(i).padStart(3, '0')};
-        const studentName = Student_${i};
-        const presentDays = Math.floor(Math.random() * (daysInMonth - 10)) + 15;
-        const absentDays = Math.floor(Math.random() * (daysInMonth - presentDays));
-        const govHolidays = daysInMonth - presentDays - absentDays;
+function loadAttendance(){
+    attendanceRecords = JSON.parse(localStorage.getItem("attendanceRecords")) || [];
+    displayAttendance(attendanceRecords);
+}
 
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${studentId}</td>
-            <td>${studentName}</td>
-            <td>${presentDays}</td>
-            <td>${absentDays}</td>
-            <td>${govHolidays}</td>
-        `;
-        tbody.appendChild(row);
-    }
+function displayAttendance(records){
+    let tbody = "";
+    records.forEach(r=>{
+        let total = r.present + r.absent + r.holidays;
+        tbody += `<tr>
+            <td>${r.rollNo}</td>
+            <td>${r.name}</td>
+            <td>${r.className}</td>
+            <td>${r.date}</td>
+            <td>${r.present}</td>
+            <td>${r.absent}</td>
+            <td>${r.holidays}</td>
+            <td>${total}</td>
+        </tr>`;
+    });
+    document.getElementById("attendanceData").innerHTML = tbody;
+}
+
+function addAttendance(event){
+    event.preventDefault();
+    let record = {
+        name: document.getElementById("studentName").value,
+        rollNo: document.getElementById("rollNo").value,
+        className: document.getElementById("className").value,
+        date: document.getElementById("attendanceDate").value,
+        present: parseInt(document.getElementById("presentDays").value) || 0,
+        absent: parseInt(document.getElementById("absentDays").value) || 0,
+        holidays: parseInt(document.getElementById("holidays").value) || 0
+    };
+    attendanceRecords.push(record);
+    localStorage.setItem("attendanceRecords", JSON.stringify(attendanceRecords));
+    displayAttendance(attendanceRecords);
+    document.querySelector("form").reset();
+}
+
+function filterByMonth(){
+    let month = document.getElementById("filterMonth").value;
+    let filtered = attendanceRecords.filter(r => r.date.startsWith(month));
+    displayAttendance(filtered);
+}
+
+function downloadCSV(){
+    let csv = "Roll No,Name,Class,Date,Present Days,Absent Days,Holidays,Total Days\n";
+    attendanceRecords.forEach(r=>{
+        let total = r.present + r.absent + r.holidays;
+        csv += `"${r.rollNo}","${r.name}","${r.className}","${r.date}","${r.present}","${r.absent}","${r.holidays}","${total}"\n`;
+    });
+    let blob = new Blob([csv], {type:"text/csv"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "Student_Attendance.csv";
+    a.click();
 }
 </script>
 
