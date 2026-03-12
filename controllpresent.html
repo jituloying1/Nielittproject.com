@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ABC School - Attendance Control</title>
+<style>
+body { font-family: Arial; background: #f2f2f2; padding: 40px; }
+h2 { text-align: center; color: #007BFF; }
+form { background: white; padding: 20px; border-radius: 8px; width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.2);}
+input, select, button { width: 100%; padding: 8px; margin: 8px 0; }
+button.save { background: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; }
+</style>
+</head>
+<body onload="loadAttendance()">
+
+<h2>ABC School - Attendance Control</h2>
+
+<form onsubmit="addAttendance(event)">
+    Name: <input type="text" id="studentName" required>
+    Roll No: <input type="text" id="rollNo" required>
+    Class: <input type="text" id="className" required>
+    Date: <input type="date" id="attendanceDate" required>
+    Present Days (P): <input type="number" id="presentDays" min="0" value="0">
+    Absent Days (A): <input type="number" id="absentDays" min="0" value="0">
+    Holidays (H): <input type="number" id="holidays" min="0" value="0">
+    <button type="submit" class="save">Add Attendance</button>
+</form>
+
+<br>
+Filter by Month: <input type="month" id="filterMonth" onchange="filterByMonth()">
+
+<table>
+<tr>
+    <th>Roll No</th>
+    <th>Name</th>
+    <th>Class</th>
+    <th>Date</th>
+    <th>Present Days</th>
+    <th>Absent Days</th>
+    <th>Holidays</th>
+    <th>Total Days</th>
+</tr>
+<tbody id="attendanceData"></tbody>
+</table>
+
+<button onclick="downloadCSV()" class="save">Download CSV</button>
+
+<script>
+let attendanceRecords = [];
+
+function loadAttendance(){
+    attendanceRecords = JSON.parse(localStorage.getItem("attendanceRecords")) || [];
+    displayAttendance(attendanceRecords);
+}
+
+function displayAttendance(records){
+    let tbody = "";
+    records.forEach(r=>{
+        let total = r.present + r.absent + r.holidays;
+        tbody += `<tr>
+            <td>${r.rollNo}</td>
+            <td>${r.name}</td>
+            <td>${r.className}</td>
+            <td>${r.date}</td>
+            <td>${r.present}</td>
+            <td>${r.absent}</td>
+            <td>${r.holidays}</td>
+            <td>${total}</td>
+        </tr>`;
+    });
+    document.getElementById("attendanceData").innerHTML = tbody;
+}
+
+function addAttendance(event){
+    event.preventDefault();
+    let record = {
+        name: document.getElementById("studentName").value,
+        rollNo: document.getElementById("rollNo").value,
+        className: document.getElementById("className").value,
+        date: document.getElementById("attendanceDate").value,
+        present: parseInt(document.getElementById("presentDays").value) || 0,
+        absent: parseInt(document.getElementById("absentDays").value) || 0,
+        holidays: parseInt(document.getElementById("holidays").value) || 0
+    };
+    attendanceRecords.push(record);
+    localStorage.setItem("attendanceRecords", JSON.stringify(attendanceRecords));
+    displayAttendance(attendanceRecords);
+    document.querySelector("form").reset();
+}
+
+function filterByMonth(){
+    let month = document.getElementById("filterMonth").value;
+    let filtered = attendanceRecords.filter(r => r.date.startsWith(month));
+    displayAttendance(filtered);
+}
+
+function downloadCSV(){
+    let csv = "Roll No,Name,Class,Date,Present Days,Absent Days,Holidays,Total Days\n";
+    attendanceRecords.forEach(r=>{
+        let total = r.present + r.absent + r.holidays;
+        csv += `"${r.rollNo}","${r.name}","${r.className}","${r.date}","${r.present}","${r.absent}","${r.holidays}","${total}"\n`;
+    });
+    let blob = new Blob([csv], {type:"text/csv"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "Student_Attendance.csv";
+    a.click();
+}
+</script>
+
+</body>
+</html>
