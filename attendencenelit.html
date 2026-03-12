@@ -1,73 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ABC School Student Attendance</title>
+<title>ABC School - Attendance</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
-    padding: 40px;
-}
-h2 {
-    text-align: center;
-    color: #007BFF;
-}
-table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
-    margin-bottom: 20px;
-}
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-}
-th {
-    background: #007BFF;
-    color: white;
-}
-button {
-    padding: 6px 10px;
-    margin: 5px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-}
-button.save { background: #28a745; color: white; }
+body { font-family: Arial; background: #f2f2f2; padding: 40px; }
+h2 { text-align: center; color: #007BFF; }
+table { border-collapse: collapse; width: 100%; background: white; margin-bottom: 20px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+th { background: #007BFF; color: white; }
+button { padding: 6px 10px; margin: 5px; cursor: pointer; border: none; border-radius: 4px; }
 button.download { background: #17a2b8; color: white; }
-button.control { background: #ffc107; color: white; }
-select, input { padding: 5px; }
-.modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
-    left: 0; top: 0; 
-    width: 100%; height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.5);
-}
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; 
-    padding: 20px; 
-    border: 1px solid #888;
-    width: 600px;
-    border-radius: 8px;
-}
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-}
 </style>
 </head>
 <body onload="loadAttendance()">
 
 <h2>ABC School - Student Attendance</h2>
-<button class="control" onclick="openAttendanceControl()" style="display:none;">Attendance Control</button>
 
 <table>
 <tr>
@@ -83,33 +30,13 @@ select, input { padding: 5px; }
 <tbody id="attendanceData"></tbody>
 </table>
 
-<!-- Attendance Control Modal -->
-<div id="attendanceModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeAttendanceControl()">&times;</span>
-    <h3>Attendance Control</h3>
-    <form id="attendanceForm" onsubmit="addAttendance(event)">
-      Name: <input type="text" id="studentName" required><br>
-      Roll No: <input type="text" id="rollNo" required><br>
-      Class: <input type="text" id="className" required><br>
-      Date: <input type="date" id="attendanceDate" required><br>
-      Present Days (P): <input type="number" id="presentDays" min="0" value="0"><br>
-      Absent Days (A): <input type="number" id="absentDays" min="0" value="0"><br>
-      Holidays (H): <input type="number" id="holidays" min="0" value="0"><br>
-      <button type="submit" class="save">Add Attendance</button>
-    </form>
-    <br>
-    Filter by Month:
-    <input type="month" id="filterMonth" onchange="filterByMonth()"><br><br>
-    <!-- Download CSV button inside modal -->
-    <button class="download" onclick="downloadCSV()">Download CSV</button>
-  </div>
-</div>
+<button class="download" onclick="downloadCSV()">Download CSV</button>
+<br><br>
+<a href="attendance_control.html"><button>Attendance Control</button></a>
 
 <script>
 let attendanceRecords = [];
 
-// Load from localStorage
 function loadAttendance(){
     attendanceRecords = JSON.parse(localStorage.getItem("attendanceRecords")) || [];
     displayAttendance(attendanceRecords);
@@ -117,10 +44,9 @@ function loadAttendance(){
 
 function displayAttendance(records){
     let tbody = "";
-    records.forEach((r,index)=>{
-        let totalDays = r.present + r.absent + r.holidays;
-        tbody += `
-        <tr>
+    records.forEach(r=>{
+        let total = r.present + r.absent + r.holidays;
+        tbody += `<tr>
             <td>${r.rollNo}</td>
             <td>${r.name}</td>
             <td>${r.className}</td>
@@ -128,48 +54,17 @@ function displayAttendance(records){
             <td>${r.present}</td>
             <td>${r.absent}</td>
             <td>${r.holidays}</td>
-            <td>${totalDays}</td>
-        </tr>
-        `;
+            <td>${total}</td>
+        </tr>`;
     });
     document.getElementById("attendanceData").innerHTML = tbody;
 }
 
-// Modal open/close
-function openAttendanceControl(){ document.getElementById("attendanceModal").style.display = "block"; }
-function closeAttendanceControl(){ document.getElementById("attendanceModal").style.display = "none"; }
-
-// Add new attendance record
-function addAttendance(event){
-    event.preventDefault();
-    let record = {
-        name: document.getElementById("studentName").value,
-        rollNo: document.getElementById("rollNo").value,
-        className: document.getElementById("className").value,
-        date: document.getElementById("attendanceDate").value,
-        present: parseInt(document.getElementById("presentDays").value) || 0,
-        absent: parseInt(document.getElementById("absentDays").value) || 0,
-        holidays: parseInt(document.getElementById("holidays").value) || 0
-    };
-    attendanceRecords.push(record);
-    localStorage.setItem("attendanceRecords", JSON.stringify(attendanceRecords));
-    displayAttendance(attendanceRecords);
-    document.getElementById("attendanceForm").reset();
-}
-
-// Filter by month
-function filterByMonth(){
-    let monthValue = document.getElementById("filterMonth").value; // yyyy-mm
-    let filtered = attendanceRecords.filter(r => r.date.startsWith(monthValue));
-    displayAttendance(filtered);
-}
-
-// Download CSV
 function downloadCSV(){
     let csv = "Roll No,Name,Class,Date,Present Days,Absent Days,Holidays,Total Days\n";
     attendanceRecords.forEach(r=>{
-        let totalDays = r.present + r.absent + r.holidays;
-        csv += `"${r.rollNo}","${r.name}","${r.className}","${r.date}","${r.present}","${r.absent}","${r.holidays}","${totalDays}"\n`;
+        let total = r.present + r.absent + r.holidays;
+        csv += `"${r.rollNo}","${r.name}","${r.className}","${r.date}","${r.present}","${r.absent}","${r.holidays}","${total}"\n`;
     });
     let blob = new Blob([csv], {type:"text/csv"});
     let a = document.createElement("a");
@@ -177,14 +72,7 @@ function downloadCSV(){
     a.download = "Student_Attendance.csv";
     a.click();
 }
-
-// Close modal if clicked outside
-window.onclick = function(event) {
-    let modal = document.getElementById("attendanceModal");
-    if(event.target == modal){ modal.style.display = "none"; }
-}
 </script>
 
 </body>
 </html>
-
