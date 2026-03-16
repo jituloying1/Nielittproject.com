@@ -18,62 +18,8 @@
 <a href="https://docs.google.com/spreadsheets/d/1uitwZdcmFzYCZ-7npl_sFx3DIlMcvST0wRx2xOhPYmI/edit?gid=0#gid=0" class="link">➡  JOB CANDIDATE DATA </a>
   <br></br>
 <a href="https://docs.google.com/spreadsheets/d/127F6MMA_jBCcZaxv18YIHAv-wN3c5bRN-M7fCKI2OPE/edit?gid=0#gid=0" class="link">➡  ADDMISSION STUDENT DATA </a>
-
-
-
-
-
-
-  <!-- Student Form -->
-  <section id="studentForm" class="form-section" style="display:none;">
-    <h3>Add Student Details</h3>
-    <form id="addStudentForm">
-      <input type="text" id="studentName" placeholder="Full Name" required>
-      <input type="number" id="studentRank" placeholder="Rank" required>
-      <input type="file" id="studentPhoto" accept="image/*" required>
-      <button type="submit">Add Student</button>
-    </form>
-  </section>
-
-  <!-- Staff Form -->
-  <section id="staffForm" class="form-section" style="display:none;">
-    <h3>Add Staff</h3>
-    <input type="text" placeholder="Staff Name">
-    <input type="text" placeholder="Position">
-  </section>
-
-  <!-- Member Form -->
-  <section id="memberForm" class="form-section" style="display:none;">
-    <h3>Add Community Member</h3>
-    <input type="text" placeholder="Member Name">
-    <input type="text" placeholder="Role">
-  </section>
-
-  <script>
-    function showSection(id) {
-      document.querySelectorAll('.form-section').forEach(sec => sec.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
-    }
-
-    document.getElementById("addStudentForm").addEventListener("submit", function(e){
-      e.preventDefault();
-
-      const name = document.getElementById("studentName").value;
-      const rank = document.getElementById("studentRank").value;
-      const photoFile = document.getElementById("studentPhoto").files[0];
-
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        localStorage.setItem("studentData", JSON.stringify({
-          name: name,
-          rank: rank,
-          photo: event.target.result
-        }));
-        window.location.href = "student-page.html";
-      }
-      reader.readAsDataURL(photoFile);
-    });
-  </script>
+<br> </br>
+ <a href="attendencenelit.html"> ATTENDANCE </a>
 </body>
 
 </html>
