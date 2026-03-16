@@ -76,9 +76,9 @@ document.getElementById("form").reset();
 
 }
 
-function downloadReceipt(user){
+/*function downloadReceipt(user){
 
-let receipt=`
+let receipt=`*/
 
 <html>
 <head>
@@ -131,8 +131,7 @@ td,th{border:1px solid black;padding:10px}
 
 </html>
 `;
-
-let blob=new Blob([receipt],{type:"text/html"});
+ let blob=new Blob([receipt],{type:"text/html"});
 
 let link=document.createElement("a");
 
