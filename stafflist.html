@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-<title>ABC SCHOOL MANAGMENT WEBSITE </title>
+<title>ABC School staff manegment Form</title>
 
 <style>
 body{font-family:Arial;background:#f2f2f2;padding:40px;}
@@ -101,7 +102,7 @@ td,th{border:1px solid black;padding:10px}
 <table>
 
 <tr>
-<th>Staff ID</th>
+<th>staff id  ID</th>
 <td>${user.appID}</td>
 </tr>
 
@@ -111,7 +112,7 @@ td,th{border:1px solid black;padding:10px}
 </tr>
 
 <tr>
-<th>Join Date</th>
+<th>join  Date</th>
 <td>${user.applydate}</td>
 </tr>
 
@@ -122,7 +123,7 @@ td,th{border:1px solid black;padding:10px}
 
 <tr>
 <th>HELPLINE NUMBER</th>
-<td> abc school -7896220943</td>
+<td>7896220943</td>
 </tr>
 
 </table>
@@ -131,7 +132,8 @@ td,th{border:1px solid black;padding:10px}
 
 </html>
 `;
- let blob=new Blob([receipt],{type:"text/html"});
+
+let blob=new Blob([receipt],{type:"text/html"});
 
 let link=document.createElement("a");
 
@@ -151,26 +153,26 @@ link.click();
 
 <div class="container">
 
-<h2>ABC School Staff manage </h2>
+<h2>ABC School Staff managment </h2>
 
 <form id="form" onsubmit="submitForm(event)">
 
 Name
 <input type="text" id="name" required>
 
-POSITION 
+Position
 <input type="text" id="father">
 
-DEPARTMENT 
+Department 
 <input type="text" id="mother">
 
 Date of Birth
 <input type="date" id="dob">
 
-JOIN DATE 
+join date  Date
 <input type="date" id="applydate">
 
-POSTING FOR 
+Applying For
 
 <select id="post">
 
@@ -200,18 +202,16 @@ POSTING FOR
 <option> Housekeeping </option>
 <option> office boy  </option>
 <option> x</option>
-  
-  
-
+ 
 </select>
 
-Upload bio data 
+ Upload Bio data 
 <input type="file" id="marksheet">
 
-Upload id card 
+ Upload id card 
 <input type="file" id="birth">
 
-Upload apoinment leeter 
+Upload Apoinment leeter
 <input type="file" id="admit">
 
 Passport Photo 
